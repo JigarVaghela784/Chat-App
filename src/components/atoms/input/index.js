@@ -1,10 +1,9 @@
-import {Input as BaseInput} from "antd";
+import { Input as BaseInput } from "antd";
 
-const Input = (props) => {
-  console.log({props})
-  return (
-    <BaseInput {...props}  />
-  )
-}
+const Input = (props ) => {
+  const {onChange,name,buttonText,rest}=props;
 
-export default Input
+  return <BaseInput name={name}  onChange={onChange} {...rest} />
+};
+
+export default Input;
