@@ -9,7 +9,8 @@ import { useStoreActions } from "../../../store/hooks";
 import styles from "./SignIn.module.css";
 import Password from "../../../components/atoms/password";
 
-const SignIn = () => {
+const SignIn = (props) => {
+  const { setIsLogin } = props;
   const { push } = useRouter();
   const [userDetails, setUserDetails] = useState({
     email: "",
@@ -17,7 +18,7 @@ const SignIn = () => {
   });
   const actions = useStoreActions({ setUser });
 
-  console.log('userDetails', userDetails)
+  console.log("userDetails", userDetails);
   const handleSignIn = () => {
     actions.setUser(userDetails);
     setUserDetails({
@@ -28,8 +29,11 @@ const SignIn = () => {
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name,value)
-    setUserDetails({ ...userDetails, [name]: value });  
+    console.log(name, value);
+    setUserDetails({ ...userDetails, [name]: value });
+  };
+  const handleLogInState = () => {
+    setIsLogin(false)
   };
   return (
     <div className={styles.Main}>
@@ -43,7 +47,6 @@ const SignIn = () => {
                 placeholder="email"
                 value={userDetails.email}
                 className={styles.InputField}
-                
               />
             </Form.Item>
             <Form.Item name="password">
@@ -59,10 +62,14 @@ const SignIn = () => {
                 }
               />
             </Form.Item>
-            <Button className={styles.Button} buttonText="Sign In"  onClick={handleSignIn}/>
+            <Button
+              className={styles.Button}
+              buttonText="Sign In"
+              onClick={handleSignIn}
+            />
           </Form>
           <div>
-            Not a member yet?<a>SignUp</a>
+            Not a member yet?<span onClick={handleLogInState}>SignUp</span>
           </div>
         </div>
       </div>

@@ -1,0 +1,38 @@
+.mainWrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+    height:  100vh;
+    border: 2px solid;
+    padding: 10px;
+
+}
+.headerWrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 10vh;
+    width: 100%;
+    border: 2px solid;
+
+}
+.chatWrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    border: 2px solid;
+}
+.inputWrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; */
+    width: 100%;
+    border: 2px solid;
+}
+.input{
+    width: 90vw;
+}
