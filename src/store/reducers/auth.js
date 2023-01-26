@@ -9,7 +9,7 @@ const initialState = {
 
 const AuthReducer = (state = initialState, action) => {
   const { type, payload, meta } = action;
-
+  
   switch (type) {
     case Types.SET_USER_DATA:
       if (meta?.lifecycle === "success") {

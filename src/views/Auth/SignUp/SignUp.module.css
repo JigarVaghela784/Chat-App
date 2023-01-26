@@ -1,0 +1,19 @@
+.Main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10% 0%;
+}
+.FormWrapper {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-flow: column;
+    border: 2px solid #dfdfdf;
+    padding: 25px;
+    border-radius: 10px;
+    background-color: #fff;
+}
+.Form {
+    padding: 25px;
+}

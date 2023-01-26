@@ -9,6 +9,7 @@ import Types from "../types/auth";
 // }
 
 export const setUser = (user) => (dispatch) => {
+  console.log('user', user)
   dispatch({
     payload: user,
     type: Types.SET_USER_DATA,
