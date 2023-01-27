@@ -11,68 +11,89 @@ import { SendOutlined } from "@ant-design/icons";
 import Chat from "../../components/atoms/chat";
 import { Avatar, Form } from "antd";
 import UserInfo from "../../components/atoms/userInfo";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  query,
+  orderBy,
+  addDoc,
+  collection,
+  serverTimestamp,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import Cookies from "js-cookie";
 
 const Dashboard = () => {
-      const email=Cookies.get('token')
-    console.log('email', email)
+  const email = Cookies.get("token");
+  console.log("email", email);
   const { push } = useRouter();
-  const [isSend, setIsSend] = useState(false)
+  const [isSend, setIsSend] = useState(false);
   const [message, setMessage] = useState([]);
+  const [userData, setUserData] = useState(null)
+  const [form] = Form.useForm();
+  
   const [msg, setMsg] = useState({
     msg: "",
     time: serverTimestamp(),
-    user: "Annu",
+    user: "",
   });
-  let info=[]
   const actions = useStoreActions({ logOutUser });
-
+  
   const handleLogout = () => {
     actions.logOutUser();
     return push("/");
   };
 
   useEffect(() => {
-    info=(JSON.parse(localStorage.getItem("message")));
-    setMessage(info)
-  }, [isSend]);
-  
-  
+    setUserData(JSON.parse(localStorage.getItem("user")));
+  }, []);
+
+  const getData = async () => {
+    let newData = [];
+    const querySnapshot = await getDocs(collection(db, "Messages"));
+    querySnapshot.forEach((doc) => {
+      const response = doc.data();
+      newData.push(response);
+    });
+    console.log("querySnapshot", newData);
+    setMessage(newData);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
   const handleSend = async (e) => {
     e.preventDefault();
-    // const docRef = await addDoc(collection(db, "Messages"), msg); 
-    // console.log("docRef", docRef);
-    info=(JSON.parse(localStorage.getItem("message")))||[];
-    info.push(msg);
-    localStorage.setItem("message", JSON.stringify(info));
-    setIsSend(true)
+    const docRef = await addDoc(collection(db, "Messages"), msg);
+    console.log("docRef", docRef);
+    form.resetFields();
   };
-
+  
   const handleChange = (e) => {
-    setMsg({ ...msg, msg: e.target.value });
-    setIsSend(false)
+    setMsg({ ...msg, msg: e.target.value,user:userData?.email });
+    setIsSend(false);
   };
-  console.log('message', message)
   return (
     <div className={styles.mainWrapper}>
       <div className={styles.headerWrapper}>
-        <UserInfo />
+        <UserInfo user={userData?.email} />
         <Button buttonText="Sign Out" onClick={handleLogout} />
       </div>
       <div className={styles.chatWrapper}>
         {message?.map((e, index) => {
           return (
-            <Chat key={index} className={styles.message}>
+            <Chat key={index} className={styles.message} userName={e.user===userData.email?"you":e?.user}>
               {e?.msg}
             </Chat>
           );
         })}
       </div>
-      <Form className={styles.fieldWrapper}>
-        <Form.Item className={styles.inputWrapper} onChange={handleChange}>
-          <Input className={styles.input} />
+      <Form className={styles.fieldWrapper} form={form}>
+        <Form.Item
+          name="message"
+          className={styles.inputWrapper}
+          onChange={handleChange}
+        >
+          <Input name="message" className={styles.input} />
         </Form.Item>
         <Form.Item className={styles.inputWrapper} onClick={handleSend}>
           <SendOutlined style={{ fontSize: "22px" }} />

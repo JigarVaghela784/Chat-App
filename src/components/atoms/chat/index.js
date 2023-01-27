@@ -1,9 +1,11 @@
-
-import styles from './chat.module.css'
-const Chat = ({children,className}) => {
+const Chat = ({ children, className, userName }) => {
+  console.log("user@@", userName);
   return (
-    <div className={className}>{children}</div>
-  )
-}
+    <div className={className}>
+      <div>{children}</div>
+      <span>{userName}</span>
+    </div>
+  );
+};
 
-export default Chat
+export default Chat;
