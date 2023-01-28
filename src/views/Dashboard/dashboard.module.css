@@ -27,6 +27,7 @@
     height: 100vh;
     width: 100%;
     overflow-y: scroll;
+    background-color: aliceblue;
     /* border: 2px solid; */
 }
 .chatWrapper::-webkit-scrollbar {
@@ -44,6 +45,8 @@
     border: 2px solid;
     width: 25%;
     padding: 10px;
+    background-color: white;
+
 }
 .left{
     left: 100px;
@@ -58,14 +61,10 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    /* padding: 20px; */
-    /* flex-flow: column; */
-    /* background-color: rgb(230, 230, 230);? */
-    /* border: 2px solid; */
+
 }
 .inputWrapper{
     width: 100%;
-    /* border-radius: 0px; */
 }
 .input{
     width: calc(85vw - 200px);

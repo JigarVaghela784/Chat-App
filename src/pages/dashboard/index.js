@@ -7,8 +7,8 @@ export default function Dashboard() {
 }
 
 export const getServerSideProps = async ({ req }) => {
-  const token = req.cookies["token"];
-  if (!token) {
+  const localId = req.cookies["localId"];
+  if (!localId) {
     return {
       redirect: {
         destination: "/",

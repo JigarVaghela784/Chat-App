@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { toast } from "react-toastify";
 import { setUser } from "../../../store/actions/auth";
 import { Form } from "antd";
 import Input from "../../../components/atoms/input";
@@ -8,6 +9,9 @@ import Button from "../../../components/atoms/button";
 import { useStoreActions } from "../../../store/hooks";
 import styles from "./SignUp.module.css";
 import Password from "../../../components/atoms/password";
+import auth from "../../../store/types/auth";
+import axios from "axios";
+import { getSimplifiedError } from "../../../lib/error";
 
 const SignIn = (props) => {
   const { setIsLogin } = props;
@@ -16,18 +20,24 @@ const SignIn = (props) => {
     username: "",
     email: "",
     password: "",
+    returnSecureToken: true,
   });
   const actions = useStoreActions({ setUser });
 
   console.log("userDetails", userDetails);
-  const handleSignIn = () => {
-    actions.setUser(userDetails);
-    setUserDetails({
-      username: "",
-      email: "",
-      password: "",
-    });
-    return setIsLogin(true);
+  const handleSignUp = async () => {
+    try {
+      const response = await axios.post(
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAreqn7Wq5XMxQxwvnDF-iA7cvJk51imys",
+        userDetails
+      );
+      const data = await response.data;
+      console.log('data', data)
+      setIsLogin(true);
+    } catch (e) {
+      console.error(e);
+      // toast(getSimplifiedError(error), { type: "error" });
+    }
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,7 +57,7 @@ const SignIn = (props) => {
               <Input
                 name="username"
                 placeholder="UserName"
-                value={userDetails.userName}
+                value={userDetails.username}
                 className={styles.InputField}
               />
             </Form.Item>
@@ -73,11 +83,12 @@ const SignIn = (props) => {
             <Button
               className={styles.Button}
               buttonText="Sign In"
-              onClick={handleSignIn}
+              onClick={handleSignUp}
             />
           </Form>
           <div>
-            already Signup switch To <span onClick={handleLogInState}>Login</span>
+            already Signup switch To{" "}
+            <span onClick={handleLogInState}>Login</span>
           </div>
         </div>
       </div>
