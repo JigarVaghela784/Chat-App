@@ -15,20 +15,17 @@
     height: 10vh;
     width: 100%;
     padding: 10px;
-    background-color: rgb(230, 230, 230);
-    /* border: 2px solid; */
-
+    background-color: rgb(260, 260, 260);
 }
 .chatWrapper{
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: flex-end;
     flex-flow: column;
-    height: 100vh;
+    height: calc(100vh - 74px);
     width: 100%;
     overflow-y: scroll;
-    background-color: aliceblue;
-    /* border: 2px solid; */
+    background-color: rgb(240, 240, 240);
 }
 .chatWrapper::-webkit-scrollbar {
     width: 5px;
@@ -39,34 +36,37 @@
   }
 .message{
     position: relative;
-    bottom: 230px;
     margin: 10px;
-    left: 36%;
     border: 2px solid;
-    width: 25%;
-    padding: 10px;
+    width: 20%;
+    padding: 10px 20px;
     background-color: white;
-
+    border-radius: 10px;
 }
 .left{
-    left: 100px;
+    left: 39%;
+    word-wrap: break-word;      
 }
 .right{
-    top:200px;
-    right: 10px;
-    padding-left: 250px;
+    right: 39%;
+    word-wrap: break-word;      
 }
 .fieldWrapper{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    /* width: 100%; */
 
 }
 .inputWrapper{
-    width: 100%;
+margin-top: 10px;
+margin-bottom: 10px;
 }
 .input{
-    width: calc(85vw - 200px);
-    border-radius: 0px;
+    width: 93vw;
+    /* padding: 0; */
+    border-radius: 5px;
+}
+.buttonWrapper{
+    margin: 10px;
 }

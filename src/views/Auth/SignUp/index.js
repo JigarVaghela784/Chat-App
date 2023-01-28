@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { toast } from "react-toastify";
 import { setUser } from "../../../store/actions/auth";
-import { Form } from "antd";
+import { Form, message } from "antd";
 import Input from "../../../components/atoms/input";
 import Button from "../../../components/atoms/button";
 import { useStoreActions } from "../../../store/hooks";
@@ -23,8 +23,6 @@ const SignIn = (props) => {
     returnSecureToken: true,
   });
   const actions = useStoreActions({ setUser });
-
-  console.log("userDetails", userDetails);
   const handleSignUp = async () => {
     try {
       const response = await axios.post(
@@ -32,21 +30,21 @@ const SignIn = (props) => {
         userDetails
       );
       const data = await response.data;
-      console.log('data', data)
+      message.success("Signup Success", 0.5);
       setIsLogin(true);
     } catch (e) {
+      message.error(e?.response?.data?.error?.message, 1.5);
       console.error(e);
-      // toast(getSimplifiedError(error), { type: "error" });
     }
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     setUserDetails({ ...userDetails, [name]: value });
   };
   const handleLogInState = () => {
     setIsLogin(true);
   };
+
   return (
     <div className={styles.Main}>
       <div className={styles.FormWrapper}>
@@ -86,9 +84,10 @@ const SignIn = (props) => {
               onClick={handleSignUp}
             />
           </Form>
+       
           <div>
             already Signup switch To{" "}
-            <span onClick={handleLogInState}>Login</span>
+            <span onClick={handleLogInState}>Login</span>.
           </div>
         </div>
       </div>

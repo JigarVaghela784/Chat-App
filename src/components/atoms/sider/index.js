@@ -1,4 +1,3 @@
-// import { Layout, Menu } from "antd";
 import styles from "./SiderBase.module.css";
 import {
   LaptopOutlined,
@@ -25,8 +24,6 @@ const SiderBase = () => {
         }),
       };
     });
-    console.log('items', items)
-  // const items = [<p> sam@gmail.com</p>];
 
   return (
     <Sider width={300}>

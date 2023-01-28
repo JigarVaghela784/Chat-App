@@ -1,11 +1,13 @@
 import { useState } from "react";
 import AuthLayout from "../../layout/AuthLayout";
+import ForgotPassword from "../../views/Auth/forgotPassword";
 import SignIn from "../../views/Auth/SignIn";
 import Signup from "../../views/Auth/SignUp";
 
 export default function LoginPage() {
   const [IsLogin, setIsLogin] = useState(true)
-  return IsLogin?<SignIn setIsLogin={setIsLogin} />:<Signup setIsLogin={setIsLogin}/>;
+  const [isForgotPassword, setIsForgotPassword] = useState(false)
+  return IsLogin?(isForgotPassword?<ForgotPassword setIsForgotPassword={setIsForgotPassword}/>:<SignIn setIsForgotPassword={setIsForgotPassword} setIsLogin={setIsLogin} />):<Signup setIsLogin={setIsLogin}/>;
 }
 
 LoginPage.getLayout = function getLayout(page) {
