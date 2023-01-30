@@ -22,6 +22,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import Cookies from "js-cookie";
+import axios from "axios";
+import dayjs from "dayjs";
 
 const Dashboard = () => {
   const email = Cookies.get("token");
@@ -34,23 +36,35 @@ const Dashboard = () => {
 
   const [msg, setMsg] = useState("");
   const actions = useStoreActions({ logOutUser });
-
   const handleLogout = () => {
     actions.logOutUser();
     return push("/");
   };
 
-  useEffect(() => {
-    setUserData(JSON.parse(localStorage.getItem("user")));
-  }, []);
+  const localId = Cookies.get("localId");
+  const getUserData = async () => {
+    try {
+      const response = await axios.get(
+        `https://chat-app-aa5be-default-rtdb.firebaseio.com/user/${localId}.json`
+      );
+      const obj = [];
+      for (var key in response.data) {
+        obj.push({ ...response.data[key] });
+      }
+      setUserData(obj[0])
+    } catch (error) {}
+  };
 
+  useEffect(() => {
+    // setUserData(JSON.parse(localStorage.getItem("user")));
+    getUserData();
+  }, []);
   const getData = async () => {
-    setMessage([]);
     const querySnapshot = query(
       collection(db, "Messages"),
       orderBy("timestamp", "asc")
     );
-    const unsub = onSnapshot(
+    return await onSnapshot(
       querySnapshot,
       (snapshot) => {
         let newData = [];
@@ -64,9 +78,7 @@ const Dashboard = () => {
         console.error(error);
       }
     );
-    return () => {
-      unsub();
-    };
+    
   };
   useEffect(() => {
     getData();
@@ -80,7 +92,8 @@ const Dashboard = () => {
     if (msg !== "") {
       const docRef = await addDoc(collection(db, "Messages"), {
         message: msg,
-        username: userData?.email,
+        email: userData?.email,
+        userName:userData?.userName,
         timestamp: serverTimestamp(),
       });
     } else {
@@ -92,27 +105,28 @@ const Dashboard = () => {
   return (
     <div className={styles.mainWrapper}>
       <div className={styles.headerWrapper}>
-        <UserInfo user={userData?.email} />
+        <UserInfo user={userData?.userName||userData?.email} />
         <Button buttonText="Sign Out" onClick={handleLogout} />
       </div>
 
       <div className={styles.chatWrapper}>
-          {message?.map((e, index) => {
-            return (
-              <Chat
-                key={index}
-                className={
-                  e.username === userData.email
-                    ? cls(styles.message, styles.left)
-                    : cls(styles.message, styles.right)
-                }
-                userName={e.username === userData.email ? "you" : e?.username}
-                time={new Date(e.timestamp?.seconds * 1000).toLocaleString()}
+        {message?.map((e, index) => {
+          let chatTime=dayjs.unix(e.timestamp?.seconds)          
+          return (
+            <Chat
+              key={index}
+              className={
+                e.email === userData?.email
+                  ? cls(styles.message, styles.left)
+                  : cls(styles.message, styles.right)
+              }
+              userName={e.email === userData?.email ? "you" : e.userName||e.email}
+              time={chatTime?chatTime:""}
               >
-                {e?.message}
-              </Chat>
-            );
-          })}
+              {e?.message}
+            </Chat>
+          );
+        })}
         <div ref={lastMessageRef}></div>
       </div>
       <Form className={styles.fieldWrapper} form={form} onFinish={handleSend}>
@@ -132,5 +146,9 @@ const Dashboard = () => {
     </div>
   );
 };
+
+
+
+
 
 export default Dashboard;

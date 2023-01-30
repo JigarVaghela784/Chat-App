@@ -61,7 +61,7 @@ const SignIn = (props) => {
         <h2>Sign In</h2>
         <div>
           <Form className={styles.Form} onChange={handleChange}>
-            <Form.Item name="email">
+            <Form.Item name="email" >
               <Input
                 name="email"
                 placeholder="email"

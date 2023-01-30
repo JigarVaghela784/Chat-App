@@ -1,0 +1,31 @@
+.container {
+  border: 1px solid;
+}
+.message {
+  padding: 10px 20px;
+  border: 2px solid;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.userDataWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.userDateLeft {
+  flex-flow: row-reverse;
+}
+.userDateRight {
+  flex-flow: row;
+}
+.left {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.right {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}

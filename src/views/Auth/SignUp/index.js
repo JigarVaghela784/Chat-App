@@ -23,13 +23,45 @@ const SignIn = (props) => {
     returnSecureToken: true,
   });
   const actions = useStoreActions({ setUser });
+
+  const userData = async (userDetails, id) => {
+    const body = {
+      localId: id,
+      userName: userDetails.username,
+      email: userDetails.email,
+    };
+    try {
+      const response = await axios.post(
+        `https://chat-app-aa5be-default-rtdb.firebaseio.com/user/${id}.json`,
+        body
+      );
+      const data = await response.data;
+      console.log("data@@@", data);
+    } catch (e) {
+      message.error(e?.response?.data?.error?.message, 1.5);
+      console.error(e);
+    }
+  };
+
   const handleSignUp = async () => {
+    // const body= {
+    //   email:userDetails.email,
+    //   password:userDetails.password,
+    // }
+    // try {
+    //   const response= await axios.post("/api/signup", body)
+    //   console.log('response', response)
+    // } catch (error) {
+    //   console.error("error");
+    // }
     try {
       const response = await axios.post(
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAreqn7Wq5XMxQxwvnDF-iA7cvJk51imys",
         userDetails
       );
-      const data = await response.data;
+      const data = await response.data.localId;
+      // console.log('data@@@', data)
+      userData(userDetails, data);
       message.success("Signup Success", 0.5);
       setIsLogin(true);
     } catch (e) {
@@ -84,7 +116,7 @@ const SignIn = (props) => {
               onClick={handleSignUp}
             />
           </Form>
-       
+
           <div>
             already Signup switch To{" "}
             <span onClick={handleLogInState}>Login</span>.

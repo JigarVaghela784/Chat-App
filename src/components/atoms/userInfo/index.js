@@ -1,5 +1,4 @@
 import { Avatar } from "antd";
-import Cookies from "js-cookie";
 import styles from './userInfo.module.css'
 const UserInfo = ({user}) => {
   return (

@@ -20,7 +20,7 @@
 .chatWrapper{
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    /* justify-content: flex-end; */
     flex-flow: column;
     height: calc(100vh - 74px);
     width: 100%;
@@ -37,19 +37,22 @@
 .message{
     position: relative;
     margin: 10px;
-    border: 2px solid;
     width: 20%;
+    height: 30%;
     padding: 10px 20px;
-    background-color: white;
-    border-radius: 10px;
+   
 }
+
+
+
 .left{
     left: 39%;
-    word-wrap: break-word;      
+    word-wrap: break-word;
+   
 }
 .right{
     right: 39%;
-    word-wrap: break-word;      
+    /* word-wrap: break-word;       */
 }
 .fieldWrapper{
     display: flex;
