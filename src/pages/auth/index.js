@@ -5,9 +5,10 @@ import SignIn from "../../views/Auth/SignIn";
 import Signup from "../../views/Auth/SignUp";
 
 export default function LoginPage() {
-  const [IsLogin, setIsLogin] = useState(true)
+  const [isLogin, setIsLogin] = useState(true)
   const [isForgotPassword, setIsForgotPassword] = useState(false)
-  return IsLogin?(isForgotPassword?<ForgotPassword setIsForgotPassword={setIsForgotPassword}/>:<SignIn setIsForgotPassword={setIsForgotPassword} setIsLogin={setIsLogin} />):<Signup setIsLogin={setIsLogin}/>;
+  console.log('isLogin', isLogin)
+  return isLogin?(isForgotPassword?<ForgotPassword setIsForgotPassword={setIsForgotPassword}/>:<SignIn setIsForgotPassword={setIsForgotPassword} setIsLogin={setIsLogin} />):<Signup setIsLogin={setIsLogin}/>;
 }
 
 LoginPage.getLayout = function getLayout(page) {

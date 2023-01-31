@@ -5,7 +5,14 @@
   padding: 10px 20px;
   border: 2px solid;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 5px;
+  word-wrap:break-word;
+}
+.messageLeft {
+  border-radius: 10px 20px 0px 20px;
+}
+.messageRight {
+  border-radius: 20px 10px 20px 0px;
 }
 
 .userDataWrapper {
@@ -29,3 +36,4 @@
   justify-content: flex-start;
   align-items: center;
 }
+  

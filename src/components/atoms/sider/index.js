@@ -6,10 +6,13 @@ import {
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, theme, MenuProps } from "antd";
 import { createElement, useState } from "react";
+import useWindowSize from "../../../store/hooks/useWindowSize";
 const { Sider } = Layout;
 
 const SiderBase = () => {
-  const items = [UserOutlined, LaptopOutlined, NotificationOutlined].map((icon, index) => {
+  const { width } = useWindowSize();
+  const items = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
+    (icon, index) => {
       const key = String(index + 1);
       return {
         key: `sub${key}`,
@@ -23,18 +26,20 @@ const SiderBase = () => {
           };
         }),
       };
-    });
-
-  return (
-    <Sider width={300}>
+    }
+  );
+  return width > 750 ? (
+    <Sider width={250}>
       <Menu
         mode="inline"
         // defaultSelectedKeys={["1"]}
         // defaultOpenKeys={["sub1"]}
         style={{ height: "100%", borderRight: 0 }}
-        items={items}
+        // items={items}
       />
     </Sider>
+  ) : (
+    ""
   );
 };
 

@@ -26,9 +26,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 
 const Dashboard = () => {
-  const email = Cookies.get("token");
   const { push } = useRouter();
-  const [isSend, setIsSend] = useState(false);
   const [message, setMessage] = useState([]);
   const [userData, setUserData] = useState(null);
   const [form] = Form.useForm();
@@ -44,19 +42,14 @@ const Dashboard = () => {
   const localId = Cookies.get("localId");
   const getUserData = async () => {
     try {
-      const response = await axios.get(
-        `https://chat-app-aa5be-default-rtdb.firebaseio.com/user/${localId}.json`
-      );
-      const obj = [];
-      for (var key in response.data) {
-        obj.push({ ...response.data[key] });
-      }
-      setUserData(obj[0])
-    } catch (error) {}
+      const response = await axios.get(`/api/user?userId=${localId}`);
+      setUserData(response?.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
-    // setUserData(JSON.parse(localStorage.getItem("user")));
     getUserData();
   }, []);
   const getData = async () => {
@@ -78,7 +71,6 @@ const Dashboard = () => {
         console.error(error);
       }
     );
-    
   };
   useEffect(() => {
     getData();
@@ -93,7 +85,7 @@ const Dashboard = () => {
       const docRef = await addDoc(collection(db, "Messages"), {
         message: msg,
         email: userData?.email,
-        userName:userData?.userName,
+        username: userData?.username,
         timestamp: serverTimestamp(),
       });
     } else {
@@ -105,13 +97,13 @@ const Dashboard = () => {
   return (
     <div className={styles.mainWrapper}>
       <div className={styles.headerWrapper}>
-        <UserInfo user={userData?.userName||userData?.email} />
+        <UserInfo user={userData?.username || userData?.email} />
         <Button buttonText="Sign Out" onClick={handleLogout} />
       </div>
 
       <div className={styles.chatWrapper}>
         {message?.map((e, index) => {
-          let chatTime=dayjs.unix(e.timestamp?.seconds)          
+          let chatTime = dayjs.unix(e.timestamp?.seconds);
           return (
             <Chat
               key={index}
@@ -120,9 +112,11 @@ const Dashboard = () => {
                   ? cls(styles.message, styles.left)
                   : cls(styles.message, styles.right)
               }
-              userName={e.email === userData?.email ? "you" : e.userName||e.email}
-              time={chatTime?chatTime:""}
-              >
+              username={
+                e.email === userData?.email ? "you" : e.username || e.email
+              }
+              time={chatTime}
+            >
               {e?.message}
             </Chat>
           );
@@ -146,9 +140,5 @@ const Dashboard = () => {
     </div>
   );
 };
-
-
-
-
 
 export default Dashboard;

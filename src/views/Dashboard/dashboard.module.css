@@ -1,75 +1,130 @@
-.mainWrapper{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-flow: column;
-    height:  100vh;
-    /* border: 2px solid; */
-    /* padding: 10px; */
-
+.mainWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+  height: 100vh;
+  /* border: 2px solid; */
+  /* padding: 10px; */
 }
-.headerWrapper{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 10vh;
-    width: 100%;
-    padding: 10px;
-    background-color: rgb(260, 260, 260);
+.headerWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 10%;
+  width: 100%;
+  padding: 10px;
+  background-color: rgb(260, 260, 260);
 }
-.chatWrapper{
-    display: flex;
-    align-items: center;
-    /* justify-content: flex-end; */
-    flex-flow: column;
-    height: calc(100vh - 74px);
-    width: 100%;
-    overflow-y: scroll;
-    background-color: rgb(240, 240, 240);
+.chatWrapper {
+  display: flex;
+  align-items: center;
+  /* justify-content: flex-end; */
+  flex-flow: column;
+  height: calc(100vh - 150px);
+  width: 100%;
+  overflow-y: scroll;
+  background-color: rgb(240, 240, 240);
 }
 .chatWrapper::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+  width: 5px;
+  height: 5px;
+}
+.chatWrapper ::-webkit-scrollbar-thumb {
+  border-radius: 50px;
+}
+.message {
+  position: relative;
+  margin: 10px;
+  width: 50%;
+  height: 30%;
+  padding: 5px 20px;
+}
+
+.left {
+  left: 25%;
+  word-wrap: break-word;
+}
+.right {
+  right: 25%;
+  word-wrap: break-word;
+}
+.fieldWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  width: 100%;
+  padding: 10px;
+}
+.inputWrapper {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.input {
+  width: 90vw;
+  border-radius: 5px;
+}
+.buttonWrapper {
+  margin: 10px;
+}
+@media only screen and (min-width: 600px) {
+  .message {
+    position: relative;
+    margin: 10px;
+    width: 40%;
+    height: 30%;
+    padding: 5px 20px;
   }
- .chatWrapper ::-webkit-scrollbar-thumb {
-    border-radius: 50px;
+
+  .left {
+    left: 30%;
   }
-.message{
+  .right {
+    right: 30%;
+  }
+  /* .input {
+    width: 90vw;
+    border-radius: 5px;
+    border: 2px solid blue;
+} */
+}
+/* @media only screen and (max-width: 750px)and(min-width:600){
+    .input {
+        width: 90vw;
+        border-radius: 5px;
+        border: 2px solid blue;
+    }
+} */
+@media only screen and (min-width: 768px) {
+  .input {
+    width: 60vw;
+  }
+  .chatWrapper {
+    height: calc(100vh - 80px);
+  }
+}
+@media only screen and (min-width: 992px) {
+  .input {
+    width: 67vw;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .message {
     position: relative;
     margin: 10px;
     width: 20%;
-    height: 30%;
-    padding: 10px 20px;
-   
-}
-
-
-
-.left{
-    left: 39%;
-    word-wrap: break-word;
-   
-}
-.right{
-    right: 39%;
-    /* word-wrap: break-word;       */
-}
-.fieldWrapper{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    /* width: 100%; */
-
-}
-.inputWrapper{
-margin-top: 10px;
-margin-bottom: 10px;
-}
-.input{
-    width: 93vw;
-    /* padding: 0; */
+    height: 20%;
+    padding: 5px 20px;
+  }
+  .input {
+    width: 75vw;
     border-radius: 5px;
-}
-.buttonWrapper{
-    margin: 10px;
+  }
+  .left {
+    left: 40%;
+  }
+  .right {
+    right: 40%;
+  }
 }

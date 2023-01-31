@@ -12,9 +12,8 @@ import { getSimplifiedError } from "../../../lib/error";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
-
 const SignIn = (props) => {
-  const { setIsLogin,setIsForgotPassword } = props;
+  const { setIsLogin, setIsForgotPassword } = props;
   const { push } = useRouter();
   const [userDetails, setUserDetails] = useState({
     email: "",
@@ -24,23 +23,20 @@ const SignIn = (props) => {
   const actions = useStoreActions({ setUser });
 
   const handleSignIn = async () => {
+    const body = {
+      email: userDetails.email,
+      password: userDetails.password,
+    };
     try {
-      const response = await axios.post(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAreqn7Wq5XMxQxwvnDF-iA7cvJk51imys",
-        userDetails
-      );
-      const data = await response?.data;
-      Cookies.set("localId", data.localId);
-      localStorage.setItem("user", JSON.stringify(data));
-
-      actions.setUser(userDetails);
+      const response = await axios.post("/api/signin", body);
+      const userId = await response?.data.user.uid;
+      console.log("data", userId);
+      Cookies.set("localId", userId);
       message.success("SignIn Success", 0.5);
       return push("/dashboard");
-    } catch (e) {
-      message.error(e?.response?.data?.error?.message, 1.5);
-      console.error(e);
-
-      // return push("/dashboard");
+    } catch (error) {
+      message.error(error?.response?.data?.code, 1.5);
+      console.error(error?.response.data?.code);
     }
   };
   const handleChange = (e) => {
@@ -51,8 +47,8 @@ const SignIn = (props) => {
     setIsLogin(false);
   };
 
-  const handleForgotPassword =() => {
-    setIsForgotPassword(true)
+  const handleForgotPassword = () => {
+    setIsForgotPassword(true);
   };
 
   return (
@@ -61,7 +57,7 @@ const SignIn = (props) => {
         <h2>Sign In</h2>
         <div>
           <Form className={styles.Form} onChange={handleChange}>
-            <Form.Item name="email" >
+            <Form.Item name="email">
               <Input
                 name="email"
                 placeholder="email"

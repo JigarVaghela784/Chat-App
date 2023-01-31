@@ -6,7 +6,7 @@ const { Content } = Layout;
 const PrivateLayout = ({ children }) => {
   return (
     <Layout>
-      {/* <SiderBase/> */}
+      <SiderBase/>
       <Layout>
         <Content style={styles.contentStyle}> {children}</Content>
       </Layout>

@@ -24,20 +24,15 @@ const ForgotPassword = (props) => {
   };
 
   const handleForgotPassword = async () => {
+    const body={
+      email:userDetails.email
+    }
     try {
-      const response = await axios.post(
-        "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyAreqn7Wq5XMxQxwvnDF-iA7cvJk51imys",
-        { requestType: "PASSWORD_RESET", email: `${userDetails.email}` }
-      );
-      console.log("response", response);
-      
-
-      const setTime = setTimeout(setIsForgotPassword(false),
-      message.success("Link Send Success", 0.5), 2000);
-      return clearTimeout(setTime);
-    } catch (e) {
-      console.error(e);
-      message.error(e?.response?.data?.error?.message, 1.5);
+      await axios.post(`/api/resetpassword`,body);
+      message.success("link send to your mail successfully please check your mail", 1.5);
+    } catch (error) {
+      message.error(error?.response?.data?.code, 1.5);
+      console.error(error?.response?.data?.code);
     }
   };
 
