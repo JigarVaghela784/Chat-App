@@ -6,7 +6,6 @@ const Home = () => {
   const { push } = useRouter();
   const user = useReducerData("auth", "user", {});
   // eslint-disable-next-line no-console
-  console.log("user", user);
 
   const handleRedirect = () => {
     return push("/auth");

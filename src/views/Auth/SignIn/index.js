@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { setUser } from "../../../store/actions/auth";
-import { Form } from "antd";
+import { Form, message, notification } from "antd";
 import Input from "../../../components/atoms/input";
 import Button from "../../../components/atoms/button";
 import { useStoreActions } from "../../../store/hooks";
@@ -12,10 +12,8 @@ import { getSimplifiedError } from "../../../lib/error";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
-// import 'react-toastify/dist/ReactToastify.css';
-
 const SignIn = (props) => {
-  const { setIsLogin } = props;
+  const { setIsLogin, setIsForgotPassword } = props;
   const { push } = useRouter();
   const [userDetails, setUserDetails] = useState({
     email: "",
@@ -24,33 +22,35 @@ const SignIn = (props) => {
   });
   const actions = useStoreActions({ setUser });
 
-  console.log("userDetails", userDetails);
   const handleSignIn = async () => {
+    const body = {
+      email: userDetails.email,
+      password: userDetails.password,
+    };
     try {
-      const response = await axios.post(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAreqn7Wq5XMxQxwvnDF-iA7cvJk51imys",
-        userDetails
-      );
-      const data = await response?.data;
-      Cookies.set("localId", data.localId);
-    localStorage.setItem("user",  JSON.stringify(data))
-      
-      actions.setUser(userDetails);
-
+      const response = await axios.post("/api/signin", body);
+      const userId = await response?.data.user.uid;
+      console.log("data", userId);
+      Cookies.set("localId", userId);
+      message.success("SignIn Success", 0.5);
       return push("/dashboard");
-    } catch (e) {
-      console.error(e);
-      // return push("/dashboard");
+    } catch (error) {
+      message.error(error?.response?.data?.code, 1.5);
+      console.error(error?.response.data?.code);
     }
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     setUserDetails({ ...userDetails, [name]: value });
   };
   const handleLogInState = () => {
     setIsLogin(false);
   };
+
+  const handleForgotPassword = () => {
+    setIsForgotPassword(true);
+  };
+
   return (
     <div className={styles.Main}>
       <div className={styles.FormWrapper}>
@@ -78,6 +78,9 @@ const SignIn = (props) => {
                 }
               />
             </Form.Item>
+            <div>
+              <span onClick={handleForgotPassword}>Forgot Password?</span>
+            </div>
             <Button
               className={styles.Button}
               buttonText="Sign In"
@@ -85,7 +88,7 @@ const SignIn = (props) => {
             />
           </Form>
           <div>
-            Not a member yet?<span onClick={handleLogInState}>SignUp</span>
+            Not Signup yet ? <span onClick={handleLogInState}>SignUp</span>
           </div>
         </div>
       </div>

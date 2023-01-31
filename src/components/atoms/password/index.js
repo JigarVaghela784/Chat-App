@@ -1,10 +1,10 @@
 import {Input as BaseInput} from "antd";
 
 const Password = (props) => {
-  const {onChange,name,rest}=props;
+  const {onChange,name,rest,placeholder}=props;
 
   return (
-    <BaseInput.Password name={name}  onChange={onChange} {...rest}/>
+    <BaseInput.Password name={name} placeholder={placeholder}  onChange={onChange} {...rest}/>
   )
 }
 

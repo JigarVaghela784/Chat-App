@@ -1,12 +1,16 @@
 
 import PrivateLayout from "../../layout/PrivateLayout";
+import { getAllData } from "../../lib/chat/getAllChat";
 import DashboardView from "../../views/Dashboard";
 
+
 export default function Dashboard() {
-  return <DashboardView />;
+  return <DashboardView  />;
 }
 
 export const getServerSideProps = async ({ req }) => {
+  const getData=await getAllData()
+  console.log('getData', getData)
   const localId = req.cookies["localId"];
   if (!localId) {
     return {
@@ -17,10 +21,13 @@ export const getServerSideProps = async ({ req }) => {
     };
   }
   return {
-    props: {},
+    props: {
+      // getData,
+    },
   };
 };
 
 Dashboard.getLayout = function getLayout(page) {
   return <PrivateLayout>{page}</PrivateLayout>;
 };
+

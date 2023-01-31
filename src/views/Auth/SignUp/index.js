@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { toast } from "react-toastify";
 import { setUser } from "../../../store/actions/auth";
-import { Form } from "antd";
+import { Form, message } from "antd";
 import Input from "../../../components/atoms/input";
 import Button from "../../../components/atoms/button";
 import { useStoreActions } from "../../../store/hooks";
@@ -24,29 +24,47 @@ const SignIn = (props) => {
   });
   const actions = useStoreActions({ setUser });
 
-  console.log("userDetails", userDetails);
-  const handleSignUp = async () => {
+  const userData = async (userDetails, id) => {
+    const body = {
+      userId: id,
+      username: userDetails.username,
+      email: userDetails.email,
+    };
     try {
-      const response = await axios.post(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAreqn7Wq5XMxQxwvnDF-iA7cvJk51imys",
-        userDetails
-      );
+      const response = await axios.post(`/api/user`, body);
       const data = await response.data;
-      console.log('data', data)
-      setIsLogin(true);
+      console.log("data@@@", data);
     } catch (e) {
+      message.error(e?.response?.data?.error?.message, 1.5);
       console.error(e);
-      // toast(getSimplifiedError(error), { type: "error" });
     }
+
   };
+
+  const handleSignUp = async () => {
+    const body = {
+      email: userDetails.email,
+      password: userDetails.password,
+    };
+    try {
+      const response = await axios.post("/api/signup", body);
+      const id = await response?.data?.user?.uid;
+       userData(userDetails, id);
+       setIsLogin(true);
+       message.success("Signup Success", 0.5);
+    } catch (error) {
+      message.error(error?.response?.data?.code, 1.5);
+      console.error("error",error?.response?.data?.code);
+    }
+};
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     setUserDetails({ ...userDetails, [name]: value });
   };
   const handleLogInState = () => {
     setIsLogin(true);
   };
+
   return (
     <div className={styles.Main}>
       <div className={styles.FormWrapper}>
@@ -86,9 +104,10 @@ const SignIn = (props) => {
               onClick={handleSignUp}
             />
           </Form>
+
           <div>
             already Signup switch To{" "}
-            <span onClick={handleLogInState}>Login</span>
+            <span onClick={handleLogInState}>Login</span>.
           </div>
         </div>
       </div>
