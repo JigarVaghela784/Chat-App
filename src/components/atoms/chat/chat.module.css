@@ -36,4 +36,14 @@
   justify-content: flex-start;
   align-items: center;
 }
-  
+
+.avatarLeft{
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  flex-flow: column;
+}
+.avatarRight{
+  position: relative;
+  display: flex;
+}

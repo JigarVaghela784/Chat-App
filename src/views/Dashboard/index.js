@@ -18,14 +18,13 @@ import axios from "axios";
 
 const socket = io("http://localhost:8080/", { transports: ["websocket"] });
 
-const Dashboard = ({speed = 5}) => {
+const Dashboard = ({speed = 10}) => {
   const { push } = useRouter();
   const [messages, setMessages] = useState([]);
   const [userData, setUserData] = useState(null);
   const [sendMsg, setSendMsg] = useState(false);
   const [form] = Form.useForm();
   const lastMessageRef = useRef(null);
-  let newMsg = [];
 
   const [msg, setMsg] = useState("");
   const token = Cookies.get("token");
@@ -76,12 +75,14 @@ const Dashboard = ({speed = 5}) => {
 
   useEffect(() => {
     getAllMessage();
-    socket.on("message", (message) => {
-      console.log("message", message);
-      messages.push(message);
-    });
-  }, [messages]);
-
+  }, []);
+  // useEffect(() => {
+    // socket.on("message", (message) => {
+    //   console.log("message", message);
+    //   messages.push(message);
+    // });
+  // }, [messages])
+  
 
   const handleSend = async () => {
     if (msg !== "") {
@@ -102,13 +103,14 @@ const Dashboard = ({speed = 5}) => {
             message: msg,
           }
         );
+        const data=await response.data;
+        messages.push(data)
         console.log("response", response);
       } catch (error) {}
      
     } else {
       console.error("please enter message");
     }
-    // setSendMsg(false)
     setMsg("");
     form.resetFields();
   };
@@ -168,9 +170,9 @@ const Dashboard = ({speed = 5}) => {
           <Input name="message" className={styles.input} />
         </Form.Item>
         <Form.Item className={styles.buttonWrapper} onClick={handleSend}>
-          {/* <Button disabled={msg === "" ? true : false}> */}
+          <Button disabled={msg === "" ? true : false}>
           <SendOutlined style={{ fontSize: "22px" }} />
-          {/* </Button> */}
+          </Button>
         </Form.Item>
       </Form>
     </div>

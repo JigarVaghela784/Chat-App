@@ -2,14 +2,21 @@ import { Avatar } from "antd";
 import styles from "./chat.module.css";
 import cls from "classnames";
 import dayjs from "dayjs";
-
+import UserInfo from "../userInfo";
 
 const Chat = ({ children, className, username, time }) => {
   const newTime = dayjs(time).format("hh:mm");
   return (
-    <div
-      className={className}
-    >
+    <div className={className}>
+      <div
+        className={
+          username === "you"
+            ? cls(styles.userInfo,styles.avatarLeft)
+            : cls(styles.userInfo,styles.avatarRight)
+        }
+      >
+        <UserInfo user={username} />
+      </div>
       <div className={styles.chatMessage}>
         <div
           className={

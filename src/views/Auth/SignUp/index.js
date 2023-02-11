@@ -15,7 +15,6 @@ import { getSimplifiedError } from "../../../lib/error";
 
 const SignIn = (props) => {
   const { setIsLogin } = props;
-  const { push } = useRouter();
   const [userDetails, setUserDetails] = useState({
     username: "",
     email: "",
@@ -24,21 +23,21 @@ const SignIn = (props) => {
   });
   const actions = useStoreActions({ setUser });
 
-  const userData = async (userDetails, id) => {
-    const body = {
-      userId: id,
-      username: userDetails.username,
-      email: userDetails.email,
-    };
-    try {
-      const response = await axios.post(`/api/user`, body);
-      const data = await response.data;
-      console.log("data@@@", data);
-    } catch (e) {
-      message.error(e?.response?.data?.error?.message, 1.5);
-      console.error(e);
-    }
-  };
+  // const userData = async (userDetails, id) => {
+  //   const body = {
+  //     userId: id,
+  //     username: userDetails.username,
+  //     email: userDetails.email,
+  //   };
+  //   try {
+  //     const response = await axios.post(`/api/user`, body);
+  //     const data = await response.data;
+  //     console.log("data@@@", data);
+  //   } catch (e) {
+  //     message.error(e?.response?.data?.error?.message, 1.5);
+  //     console.error(e);
+  //   }
+  // };
 
   const handleSignUp = async () => {
     const payload = {
@@ -52,8 +51,8 @@ const SignIn = (props) => {
         payload,
       });
       console.log("response", response);
-       message.success("Signup Success", 0.5);
-       push('/login')
+       await message.success("Signup Success", 1.5);
+       setIsLogin(true);
     } catch (error) {
       message.error(error?.response?.data?.error, 1.5)
 

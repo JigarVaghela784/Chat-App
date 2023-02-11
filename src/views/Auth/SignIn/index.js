@@ -29,18 +29,16 @@ const SignIn = (props) => {
     };
     try {
       const response = await axios.post("http://localhost:8080/login", {
-        mode:'cors',
+        mode: "cors",
         payload,
       });
       console.log("response", response);
-      const token=response.data.token
-      Cookies.set("token",token)
-      push('/dashboard')  
-      message.success("Signup Success", 0.5);
-
+      const token = response.data.token;
+      Cookies.set("token", token);
+      await message.success("Signup Success", 0.5);
+      push("/dashboard");
     } catch (error) {
-      message.error(error?.response?.data?.error, 1.5)
-      console.log('error', error.response.data.error)
+      message.error(error?.response?.data?.error, 1.5);
     }
   };
   const handleChange = (e) => {
