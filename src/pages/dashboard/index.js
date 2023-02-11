@@ -11,7 +11,7 @@ export default function Dashboard() {
 export const getServerSideProps = async ({ req }) => {
   const getData=await getAllData()
   console.log('getData', getData)
-  const localId = req.cookies["localId"];
+  const localId = req.cookies["token"];
   if (!localId) {
     return {
       redirect: {
