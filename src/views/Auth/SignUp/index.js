@@ -38,25 +38,27 @@ const SignIn = (props) => {
       message.error(e?.response?.data?.error?.message, 1.5);
       console.error(e);
     }
-
   };
 
   const handleSignUp = async () => {
-    const body = {
+    const payload = {
+      name: userDetails.username,
       email: userDetails.email,
       password: userDetails.password,
     };
     try {
-      const response = await axios.post("/api/signup", body);
-      const id = await response?.data?.user?.uid;
-       userData(userDetails, id);
-       setIsLogin(true);
+      const response = await axios.post("http://localhost:8080/signup", {
+        mode:'cors',
+        payload,
+      });
+      console.log("response", response);
        message.success("Signup Success", 0.5);
+       push('/login')
     } catch (error) {
-      message.error(error?.response?.data?.code, 1.5);
-      console.error("error",error?.response?.data?.code);
+      message.error(error?.response?.data?.error, 1.5)
+
     }
-};
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserDetails({ ...userDetails, [name]: value });

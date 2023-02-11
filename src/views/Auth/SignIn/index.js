@@ -23,20 +23,24 @@ const SignIn = (props) => {
   const actions = useStoreActions({ setUser });
 
   const handleSignIn = async () => {
-    const body = {
+    const payload = {
       email: userDetails.email,
       password: userDetails.password,
     };
     try {
-      const response = await axios.post("/api/signin", body);
-      const userId = await response?.data.user.uid;
-      console.log("data", userId);
-      Cookies.set("localId", userId);
-      message.success("SignIn Success", 0.5);
-      return push("/dashboard");
+      const response = await axios.post("http://localhost:8080/login", {
+        mode:'cors',
+        payload,
+      });
+      console.log("response", response);
+      const token=response.data.token
+      Cookies.set("token",token)
+      push('/dashboard')  
+      message.success("Signup Success", 0.5);
+
     } catch (error) {
-      message.error(error?.response?.data?.code, 1.5);
-      console.error(error?.response.data?.code);
+      message.error(error?.response?.data?.error, 1.5)
+      console.log('error', error.response.data.error)
     }
   };
   const handleChange = (e) => {

@@ -11,113 +11,149 @@ import { SendOutlined } from "@ant-design/icons";
 import Chat from "../../components/atoms/chat";
 import { Avatar, Form } from "antd";
 import UserInfo from "../../components/atoms/userInfo";
+import { io } from "socket.io-client";
 
-import {
-  addDoc,
-  collection,
-  orderBy,
-  onSnapshot,
-  query,
-  serverTimestamp,
-} from "firebase/firestore";
-import { db } from "../../../firebaseConfig";
 import Cookies from "js-cookie";
 import axios from "axios";
-import dayjs from "dayjs";
 
-const Dashboard = () => {
+const socket = io("http://localhost:8080/", { transports: ["websocket"] });
+
+const Dashboard = ({speed = 5}) => {
   const { push } = useRouter();
-  const [message, setMessage] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [userData, setUserData] = useState(null);
+  const [sendMsg, setSendMsg] = useState(false);
   const [form] = Form.useForm();
   const lastMessageRef = useRef(null);
+  let newMsg = [];
 
   const [msg, setMsg] = useState("");
+  const token = Cookies.get("token");
   const actions = useStoreActions({ logOutUser });
-  const handleLogout = () => {
-    actions.logOutUser();
-    return push("/");
+  const handleLogout = async () => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      await axios.post("http://localhost:8080/logout", {
+        mode: "cors",
+      });
+      Cookies.remove("token");
+      actions;
+      return push("/");
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
-  const localId = Cookies.get("localId");
-  const getUserData = async () => {
+  const getAllMessage = async () => {
     try {
-      const response = await axios.get(`/api/user?userId=${localId}`);
-      setUserData(response?.data);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.get("http://localhost:8080/user/message", {
+        mode: "cors",
+      });
+      setMessages(response?.data.message);
+      console.log("response", response?.data.message);
     } catch (error) {
-      console.error(error);
+      console.log("error", error);
+    }
+  };
+
+  const getUser = async () => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.get("http://localhost:8080/user", {
+        mode: "cors",
+      });
+      const { name, email, _id } = response.data.user;
+      setUserData({ name, email, _id });
+    } catch (error) {
+      console.log("error", error);
     }
   };
 
   useEffect(() => {
-    getUserData();
-  }, []);
-  const getData = async () => {
-    const querySnapshot = query(
-      collection(db, "Messages"),
-      orderBy("timestamp", "asc")
-    );
-    return await onSnapshot(
-      querySnapshot,
-      (snapshot) => {
-        let newData = [];
-
-        snapshot.forEach((doc) => {
-          newData.push({ id: doc.id, ...doc.data() });
-        });
-        setMessage(newData);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  };
-  useEffect(() => {
-    getData();
+    getUser();
   }, []);
 
   useEffect(() => {
-    lastMessageRef.current.scrollIntoView();
-  }, [message]);
+    getAllMessage();
+    socket.on("message", (message) => {
+      console.log("message", message);
+      messages.push(message);
+    });
+  }, [messages]);
+
 
   const handleSend = async () => {
     if (msg !== "") {
-      const docRef = await addDoc(collection(db, "Messages"), {
-        message: msg,
-        email: userData?.email,
-        username: userData?.username,
-        timestamp: serverTimestamp(),
-      });
+      // console.log("userData", userData);
+      // socket.emit(`sendMessage`, {
+      //   id:userData?._id,
+      //   message:msg,
+      //   username: userData?.name,
+      //   email: userData.email,
+      //   timestamp: new Date(Date.now()).toLocaleString(),
+      // });
+      try {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const response = await axios.post(
+          "http://localhost:8080/user/message",
+          {
+            mode: "cors",
+            message: msg,
+          }
+        );
+        console.log("response", response);
+      } catch (error) {}
+     
     } else {
       console.error("please enter message");
     }
+    // setSendMsg(false)
     setMsg("");
     form.resetFields();
   };
+  const wrapperRef = useRef(null);
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    let animationId;
+
+    const scroll = () => {
+      wrapper.scrollTop += speed;
+      animationId = requestAnimationFrame(scroll);
+    };
+
+    animationId = requestAnimationFrame(scroll);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+    };
+  }, [speed]);
   return (
     <div className={styles.mainWrapper}>
       <div className={styles.headerWrapper}>
-        <UserInfo user={userData?.username || userData?.email} />
+        <UserInfo user={userData?.name || userData?.email} />
         <Button buttonText="Sign Out" onClick={handleLogout} />
       </div>
 
-      <div className={styles.chatWrapper}>
-        {message?.map((e, index) => {
-          let chatTime = dayjs.unix(e.timestamp?.seconds);
+      <div className={styles.chatWrapper}  ref={wrapperRef}
+      style={{  whiteSpace: "nowrap" }}>
+        {messages?.map((e, index) => {
           return (
             <Chat
               key={index}
               className={
-                e.email === userData?.email
+                e.email || e.ownerEmail === userData?.email
                   ? cls(styles.message, styles.left)
                   : cls(styles.message, styles.right)
               }
               username={
-                e.email === userData?.email ? "you" : e.username || e.email
+                e.email || e.ownerEmail === userData?.email
+                  ? "you"
+                  : e.name || e.ownerName || e.ownerEmail || e.email
               }
-              time={chatTime}
+              time={e.timestamp}
             >
-              {e?.message}
+              {e?.msg || e?.message}
             </Chat>
           );
         })}
