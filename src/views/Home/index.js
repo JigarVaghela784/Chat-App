@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import {useReducerData} from "../../store/hooks";
+import { useReducerData } from "../../store/hooks";
 import Button from "../../components/atoms/button";
 
 const Home = () => {
@@ -12,7 +12,10 @@ const Home = () => {
   };
   return (
     <div>
-      Home Page
+      <div>
+        <h1>Chat Room</h1>
+      </div>
+
       <Button buttonText="Go to Login Page" onClick={handleRedirect} />
     </div>
   );

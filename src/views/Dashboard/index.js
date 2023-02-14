@@ -6,118 +6,126 @@ import { useStoreActions } from "../../store/hooks";
 import styles from "./dashboard.module.css";
 import Button from "../../components/atoms/button";
 import Input from "../../components/atoms/input";
-import cls from "classnames";
 import { SendOutlined } from "@ant-design/icons";
 import Chat from "../../components/atoms/chat";
-import { Avatar, Form } from "antd";
-import UserInfo from "../../components/atoms/userInfo";
+import { Form } from "antd";
 
-import {
-  addDoc,
-  collection,
-  orderBy,
-  onSnapshot,
-  query,
-  serverTimestamp,
-} from "firebase/firestore";
-import { db } from "../../../firebaseConfig";
+import UserInfo from "../../components/atoms/userInfo";
+import { io } from "socket.io-client";
+
 import Cookies from "js-cookie";
 import axios from "axios";
-import dayjs from "dayjs";
+
+const socket = io("http://localhost:8080/", { transports: ["websocket"] });
 
 const Dashboard = () => {
   const { push } = useRouter();
-  const [message, setMessage] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [userData, setUserData] = useState(null);
   const [form] = Form.useForm();
   const lastMessageRef = useRef(null);
-
+  const inputEl = useRef(null);
   const [msg, setMsg] = useState("");
+  const token = Cookies.get("token");
   const actions = useStoreActions({ logOutUser });
-  const handleLogout = () => {
-    actions.logOutUser();
-    return push("/");
-  };
 
-  const localId = Cookies.get("localId");
-  const getUserData = async () => {
+  const handleLogout = async () => {
     try {
-      const response = await axios.get(`/api/user?userId=${localId}`);
-      setUserData(response?.data);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      await axios.post("http://localhost:8080/logout", {
+        mode: "cors",
+      });
+      Cookies.remove("token");
+      actions;
+      return push("/");
     } catch (error) {
-      console.error(error);
+      console.log("error", error);
     }
   };
 
-  useEffect(() => {
-    getUserData();
-  }, []);
-  const getData = async () => {
-    const querySnapshot = query(
-      collection(db, "Messages"),
-      orderBy("timestamp", "asc")
-    );
-    return await onSnapshot(
-      querySnapshot,
-      (snapshot) => {
-        let newData = [];
-
-        snapshot.forEach((doc) => {
-          newData.push({ id: doc.id, ...doc.data() });
-        });
-        setMessage(newData);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
+  const getAllMessage = async () => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.get("http://localhost:8080/user/message", {
+        mode: "cors",
+      });
+      setMessages(response?.data.message);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
-  useEffect(() => {
-    getData();
-  }, []);
+
+  const getUser = async () => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.get("http://localhost:8080/user", {
+        mode: "cors",
+      });
+      const { name, email, _id } = response.data.user;
+      setUserData({ name, email, _id });
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   useEffect(() => {
     lastMessageRef.current.scrollIntoView();
-  }, [message]);
+  }, [messages]);
+
+  useEffect(() => {
+    if (!token) {
+      push("/auth");
+    } else {
+      getUser();
+    }
+    getAllMessage();
+  }, []);
 
   const handleSend = async () => {
-    if (msg !== "") {
-      const docRef = await addDoc(collection(db, "Messages"), {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.post("http://localhost:8088/user/message", {
+        mode: "cors",
         message: msg,
-        email: userData?.email,
-        username: userData?.username,
-        timestamp: serverTimestamp(),
       });
-    } else {
-      console.error("please enter message");
-    }
+      const data = await response.data;
+      socket.emit(`sendMessage`, {
+        ...data,
+      });
+    } catch (error) {}
     setMsg("");
     form.resetFields();
   };
+  useEffect(() => {
+    socket.on("message", (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+    return () => {
+      socket.off("message");
+    };
+  }, [messages]);
+
   return (
     <div className={styles.mainWrapper}>
       <div className={styles.headerWrapper}>
-        <UserInfo user={userData?.username || userData?.email} />
+        <UserInfo user={userData?.name || userData?.email} />
         <Button buttonText="Sign Out" onClick={handleLogout} />
       </div>
-
       <div className={styles.chatWrapper}>
-        {message?.map((e, index) => {
-          let chatTime = dayjs.unix(e.timestamp?.seconds);
+        {messages?.map((e, index) => {
+          const isUser = e.name === userData?.name;
+          const currentIndex = messages.findIndex((d) => d._id === e._id);
+          const prevData = messages[currentIndex - 1];
+
           return (
             <Chat
+              prevData={prevData}
               key={index}
-              className={
-                e.email === userData?.email
-                  ? cls(styles.message, styles.left)
-                  : cls(styles.message, styles.right)
-              }
-              username={
-                e.email === userData?.email ? "you" : e.username || e.email
-              }
-              time={chatTime}
+              isUser={isUser}
+              username={e.name}
+              time={e.createdAt}
             >
-              {e?.message}
+              {e?.msg || e?.message}
             </Chat>
           );
         })}
@@ -132,9 +140,7 @@ const Dashboard = () => {
           <Input name="message" className={styles.input} />
         </Form.Item>
         <Form.Item className={styles.buttonWrapper} onClick={handleSend}>
-          {/* <Button disabled={msg === "" ? true : false}> */}
           <SendOutlined style={{ fontSize: "22px" }} />
-          {/* </Button> */}
         </Form.Item>
       </Form>
     </div>

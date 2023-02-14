@@ -15,7 +15,6 @@ import { getSimplifiedError } from "../../../lib/error";
 
 const SignIn = (props) => {
   const { setIsLogin } = props;
-  const { push } = useRouter();
   const [userDetails, setUserDetails] = useState({
     username: "",
     email: "",
@@ -24,39 +23,39 @@ const SignIn = (props) => {
   });
   const actions = useStoreActions({ setUser });
 
-  const userData = async (userDetails, id) => {
-    const body = {
-      userId: id,
-      username: userDetails.username,
-      email: userDetails.email,
-    };
-    try {
-      const response = await axios.post(`/api/user`, body);
-      const data = await response.data;
-      console.log("data@@@", data);
-    } catch (e) {
-      message.error(e?.response?.data?.error?.message, 1.5);
-      console.error(e);
-    }
-
-  };
+  // const userData = async (userDetails, id) => {
+  //   const body = {
+  //     userId: id,
+  //     username: userDetails.username,
+  //     email: userDetails.email,
+  //   };
+  //   try {
+  //     const response = await axios.post(`/api/user`, body);
+  //     const data = await response.data;
+  //   } catch (e) {
+  //     message.error(e?.response?.data?.error?.message, 1.5);
+  //     console.error(e);
+  //   }
+  // };
 
   const handleSignUp = async () => {
-    const body = {
+    const payload = {
+      name: userDetails.username,
       email: userDetails.email,
       password: userDetails.password,
     };
     try {
-      const response = await axios.post("/api/signup", body);
-      const id = await response?.data?.user?.uid;
-       userData(userDetails, id);
+      const response = await axios.post("http://localhost:8080/signup", {
+        mode:'cors',
+        payload,
+      });
+       await message.success("Signup Success", 1.5);
        setIsLogin(true);
-       message.success("Signup Success", 0.5);
     } catch (error) {
-      message.error(error?.response?.data?.code, 1.5);
-      console.error("error",error?.response?.data?.code);
+      message.error(error?.response?.data?.error, 1.5)
+
     }
-};
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserDetails({ ...userDetails, [name]: value });

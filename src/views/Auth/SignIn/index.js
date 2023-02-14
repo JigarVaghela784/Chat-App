@@ -1,15 +1,13 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { setUser } from "../../../store/actions/auth";
-import { Form, message, notification } from "antd";
+import { Form, message } from "antd";
 import Input from "../../../components/atoms/input";
 import Button from "../../../components/atoms/button";
 import { useStoreActions } from "../../../store/hooks";
 import styles from "./SignIn.module.css";
 import Password from "../../../components/atoms/password";
 import axios from "axios";
-import { getSimplifiedError } from "../../../lib/error";
-import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
 const SignIn = (props) => {
@@ -20,23 +18,25 @@ const SignIn = (props) => {
     password: "",
     returnSecureToken: true,
   });
-  const actions = useStoreActions({ setUser });
+  const token=Cookies.get('token')
+
 
   const handleSignIn = async () => {
-    const body = {
+    const payload = {
       email: userDetails.email,
       password: userDetails.password,
     };
     try {
-      const response = await axios.post("/api/signin", body);
-      const userId = await response?.data.user.uid;
-      console.log("data", userId);
-      Cookies.set("localId", userId);
-      message.success("SignIn Success", 0.5);
-      return push("/dashboard");
+      const response = await axios.post("http://localhost:8080/login", {
+        mode: "cors",
+        payload,
+      });
+      const token = response.data.token;
+      Cookies.set("token", token);
+      await message.success("Signup Success", 0.5);
+      push("/dashboard");
     } catch (error) {
-      message.error(error?.response?.data?.code, 1.5);
-      console.error(error?.response.data?.code);
+      message.error(error?.response?.data?.error, 1.5);
     }
   };
   const handleChange = (e) => {
@@ -51,12 +51,20 @@ const SignIn = (props) => {
     setIsForgotPassword(true);
   };
 
+  useEffect(() => {
+    if(token){
+      push("/dashboard");
+    }
+  }, [handleSignIn])
+
+
+
   return (
     <div className={styles.Main}>
       <div className={styles.FormWrapper}>
-        <h2>Sign In</h2>
         <div>
           <Form className={styles.Form} onChange={handleChange}>
+            <h1>Sign In</h1>
             <Form.Item name="email">
               <Input
                 name="email"

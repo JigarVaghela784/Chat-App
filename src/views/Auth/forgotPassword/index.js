@@ -16,7 +16,6 @@ const ForgotPassword = (props) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     setUserDetails({ ...userDetails, [name]: value });
   };
   const handleLogInState = () => {

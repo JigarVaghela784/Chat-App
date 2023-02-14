@@ -1,39 +1,117 @@
-.container {
-  border: 1px solid;
+.userInfo {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  width: 100%;
+  font-weight: bolder;
 }
 .message {
-  padding: 10px 20px;
-  border: 2px solid;
-  background-color: white;
-  border-radius: 5px;
-  word-wrap:break-word;
+  padding: 10px;
+  margin: 10px;
+  width: -moz-fit-content !important;
+  width: fit-content !important;
+  max-width: 45%;
 }
-.messageLeft {
-  border-radius: 10px 20px 0px 20px;
-}
-.messageRight {
-  border-radius: 20px 10px 20px 0px;
-}
-
-.userDataWrapper {
+.message__user {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.userDateLeft {
   flex-flow: row-reverse;
+  margin-left: auto;
+  text-align: left !important;
 }
-.userDateRight {
-  flex-flow: row;
-}
-.left {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-.right {
+.message__guest {
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
-  
+
+.message__prevUser {
+  min-width: 200px;
+  margin-top: -45px;
+  background-color: #cdf8ac;
+  border: none;
+  position: relative;
+  margin-left: 20px;
+  margin-bottom: 10px;
+  padding: 10px;
+  min-height: 56px;
+  text-align: left;
+  font: 400 0.9em "Open Sans", sans-serif;
+  border-radius: 10px;
+}
+.message__prevGuest {
+  background-color: white;
+  border: none;
+  min-width: 200px;
+  position: relative;
+  margin-left: 50px;
+  margin-bottom: 10px;
+  margin-top: -45px;
+  padding: 10px;
+  min-height: 56px;
+  text-align: left;
+  font: 400 0.9em "Open Sans", sans-serif;
+  border-radius: 10px;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+}
+.message__userCard {
+  background-color: #cdf8ac;
+  border: none;
+  position: relative;
+  margin-left: 20px;
+  margin-bottom: 10px;
+  padding: 10px;
+  min-height: 56px;
+  text-align: left;
+  font: 400 0.9em "Open Sans", sans-serif;
+  border-radius: 10px;
+}
+.message__userCard:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 15px solid #cdf8ac;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  top: 0;
+  right: -15px;
+}
+
+.message__guestCard {
+  background-color: white;
+  border: none;
+  position: relative;
+  margin-left: 20px;
+  margin-bottom: 10px;
+  padding: 10px;
+  min-height: 56px;
+  text-align: left;
+  font: 400 0.9em "Open Sans", sans-serif;
+  border-radius: 10px;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+}
+
+.message__guestCard:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 15px solid white;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  top: 0;
+  left: -15px;
+}
+.messageLength {
+  word-break: break-word;
+  text-align: initial;
+}
+.messageLength p {
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+}

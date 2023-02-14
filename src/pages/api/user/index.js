@@ -18,7 +18,6 @@ export default async function SetUser(req, res) {
   } else {
     if (req.method === "GET") {
       const { userId } = req.query;
-      console.log("userId", userId);
       try {
         const response = await get(child(dbRef, `users/${userId}`));
         if (response.exists()) {
