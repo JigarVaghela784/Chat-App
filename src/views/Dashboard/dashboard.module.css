@@ -2,15 +2,17 @@
   display: flex;
   justify-content: center;
   flex-flow: column;
+  background: #e5ded8 url("../../styles/assets/whatsapp-bg.png");
+
   height: 100vh;
 }
 .headerWrapper {
   display: flex;
   justify-content: space-between;
-  height: 10%;
+  height: 8%;
   width: 100%;
   padding: 10px;
-  background-color: #eee;
+  background-color: #009688;
   align-items: center;
 }
 .chatWrapper {
@@ -19,7 +21,6 @@
   height: calc(100vh - 150px);
   width: 100%;
   overflow-y: scroll;
-  background-color: #e5ded8;
 }
 .chatWrapper::-webkit-scrollbar {
   width: 5px;
@@ -28,7 +29,11 @@
 .chatWrapper ::-webkit-scrollbar-thumb {
   border-radius: 50px;
 }
-
+.emojiWrapper {
+  bottom: 72px;
+  position: fixed;
+  right: 0px;
+}
 .fieldWrapper {
   display: flex;
   justify-content: space-between;
@@ -40,19 +45,14 @@
 .inputWrapper {
   margin-top: 10px;
   margin-bottom: 10px;
+  width: 100%;
 }
 .input {
-  width: 85vw;
+  /* width: 85vw; */
   border-radius: 5px;
 }
 .buttonWrapper {
   margin: 10px;
-}
-@media only screen and (min-width: 600px) {
-  .input {
-    width: 90vw;
-    border-radius: 5px;
-  }
 }
 
 @media only screen and (min-width: 768px) {
@@ -60,14 +60,14 @@
     height: calc(100vh - 80px);
   }
 }
-@media only screen and (min-width: 992px) {
-  .input {
-    width: 95vw;
-  }
-}
 @media only screen and (min-width: 1200px) {
   .input {
-    width: 96vw;
+    width: 90%;
     border-radius: 5px;
+  }
+  .inputWrapper div div div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }

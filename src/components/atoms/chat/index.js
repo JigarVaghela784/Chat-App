@@ -4,21 +4,45 @@ import cls from "classnames";
 import dayjs from "dayjs";
 import UserInfo from "../userInfo";
 import { useState } from "react";
+import {
+  CloseCircleTwoTone,
+  CopyOutlined,
+  DeleteFilled,
+  DeleteOutlined,
+} from "@ant-design/icons";
+import Cookies from "js-cookie";
+import axios from "axios";
 
-const Chat = ({ children, username, time, isUser, prevData }) => {
+const Chat = ({
+  children,
+  username,
+  time,
+  isUser,
+  prevData,
+  message,
+  deleteMessageHandler,
+}) => {
+  const [textToCopy, setTextToCopy] = useState(null);
   time = dayjs(time).format("hh:mm");
+  const token = Cookies.get("token");
+  const deleteMessage = () => {
+    deleteMessageHandler(message);
+  };
+
   return (
     <div>
       <div
         className={
           !isUser
             ? cls(styles.message, styles.message__guest)
-            : cls(styles.message, styles.message__user)
+            : prevData?.name !== username
+            ? cls(styles.message, styles.message__user)
+            : cls(styles.message, styles.message__userWrapper)
         }
       >
-        <div>
+        <div className={!isUser ? styles.avatarWrapper : styles.userAvatar}>
           {prevData !== username ? (
-            <UserInfo prevData={prevData}  user={username} withName={false} />
+            <UserInfo prevData={prevData} user={username} withName={false} />
           ) : null}
         </div>
         <div
@@ -46,6 +70,14 @@ const Chat = ({ children, username, time, isUser, prevData }) => {
             )}
           </div>
         </div>
+        {isUser && (
+          <div className={styles.deleteWrapper} onClick={deleteMessage}>
+            <CloseCircleTwoTone twoToneColor="#eb2f96"/>
+          </div>
+        )}
+        {/* <div style={{ cursor: "pointer" }} onClick={copyHandler}>
+          <CopyOutlined />
+        </div> */}
         {/* </div> */}
       </div>
     </div>

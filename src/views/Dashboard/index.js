@@ -15,6 +15,9 @@ import { io } from "socket.io-client";
 
 import Cookies from "js-cookie";
 import axios from "axios";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
+import { async } from "@firebase/util";
 
 const socket = io("http://localhost:8080/", { transports: ["websocket"] });
 
@@ -22,6 +25,8 @@ const Dashboard = () => {
   const { push } = useRouter();
   const [messages, setMessages] = useState([]);
   const [userData, setUserData] = useState(null);
+  const [isEmoji, setIsEmoji] = useState(false);
+  const [emoji, setEmoji] = useState(null);
   const [form] = Form.useForm();
   const lastMessageRef = useRef(null);
   const inputEl = useRef(null);
@@ -84,11 +89,12 @@ const Dashboard = () => {
   const handleSend = async () => {
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const response = await axios.post("http://localhost:8088/user/message", {
+      const response = await axios.post("http://localhost:8080/user/message", {
         mode: "cors",
         message: msg,
       });
       const data = await response.data;
+
       socket.emit(`sendMessage`, {
         ...data,
       });
@@ -96,21 +102,49 @@ const Dashboard = () => {
     setMsg("");
     form.resetFields();
   };
+
+  const emojiHandler = () => {
+    setIsEmoji(!isEmoji);
+  };
+  // console.log("isEmoji", isEmoji);
+  const deleteMessageHandler = async (msg) => {
+    const id = msg._id;
+    console.log("id", id);
+    console.log("id", token);
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.delete(
+        `http://localhost:8080/user/message/${id}`,
+        {
+          mode: "cors",
+        }
+      );
+      const data = await response.data;
+      socket.emit("deleteMessage", { ...data });
+      console.log("data", data);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
   useEffect(() => {
     socket.on("message", (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
+    });
+    socket.on("delMessage", (message) => {
+      messages = messages?.filter((delMsg) => delMsg?._id !== message?._id);
+      setMessages(messages)
     });
     return () => {
       socket.off("message");
     };
   }, [messages]);
-
   return (
     <div className={styles.mainWrapper}>
       <div className={styles.headerWrapper}>
         <UserInfo user={userData?.name || userData?.email} />
         <Button buttonText="Sign Out" onClick={handleLogout} />
       </div>
+
       <div className={styles.chatWrapper}>
         {messages?.map((e, index) => {
           const isUser = e.name === userData?.name;
@@ -124,6 +158,8 @@ const Dashboard = () => {
               isUser={isUser}
               username={e.name}
               time={e.createdAt}
+              message={e}
+              deleteMessageHandler={deleteMessageHandler}
             >
               {e?.msg || e?.message}
             </Chat>
@@ -131,6 +167,11 @@ const Dashboard = () => {
         })}
         <div ref={lastMessageRef}></div>
       </div>
+      {/* {isEmoji && (
+        <div className={styles.emojiWrapper} onClick={handleSendsEmoji}>
+          <Picker data={emoji} onEmojiSelect={console.log} />
+        </div>
+      )} */}
       <Form className={styles.fieldWrapper} form={form} onFinish={handleSend}>
         <Form.Item
           name="message"
@@ -139,6 +180,7 @@ const Dashboard = () => {
         >
           <Input name="message" className={styles.input} />
         </Form.Item>
+        <div onClick={emojiHandler}>emoji</div>
         <Form.Item className={styles.buttonWrapper} onClick={handleSend}>
           <SendOutlined style={{ fontSize: "22px" }} />
         </Form.Item>

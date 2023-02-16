@@ -6,7 +6,7 @@
   font-weight: bolder;
 }
 .message {
-  padding: 10px;
+  padding: 13px;
   margin: 10px;
   width: -moz-fit-content !important;
   width: fit-content !important;
@@ -23,14 +23,19 @@
   justify-content: flex-start;
   align-items: center;
 }
-
+.message__userWrapper{
+  margin-top: -35px;
+  display: flex;
+  flex-flow: row-reverse;
+  margin-left: auto;
+  text-align: left !important;
+}
 .message__prevUser {
   min-width: 200px;
-  margin-top: -45px;
   background-color: #cdf8ac;
   border: none;
   position: relative;
-  margin-left: 20px;
+  margin-right: 50px;
   margin-bottom: 10px;
   padding: 10px;
   min-height: 56px;
@@ -59,13 +64,14 @@
   background-color: #cdf8ac;
   border: none;
   position: relative;
-  margin-left: 20px;
+  margin-right: 19px;
   margin-bottom: 10px;
   padding: 10px;
   min-height: 56px;
   text-align: left;
   font: 400 0.9em "Open Sans", sans-serif;
   border-radius: 10px;
+  min-width: 200px;
 }
 .message__userCard:after {
   content: "";
@@ -93,8 +99,16 @@
   display: flex;
   flex-flow: column;
   justify-content: space-between;
+  min-width: 200px;
 }
-
+.avatarWrapper{
+  position: relative;
+  bottom: 20px;
+}
+.userAvatar{
+  position: relative;
+  bottom: 2px;
+}
 .message__guestCard:after {
   content: "";
   position: absolute;
@@ -114,4 +128,16 @@
   font-size: 18px;
   margin: 0;
   padding: 0;
+}
+.deleteWrapper{
+  display: none;
+}
+.message:hover .deleteWrapper{
+  /* display: block; */
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  font-size: 30px;
+  padding: 0 10px;
 }

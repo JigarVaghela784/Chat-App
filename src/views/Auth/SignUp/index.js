@@ -3,12 +3,14 @@ import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { toast } from "react-toastify";
 import { setUser } from "../../../store/actions/auth";
-import { Form, message } from "antd";
+import { Form, Image, message } from "antd";
 import Input from "../../../components/atoms/input";
 import Button from "../../../components/atoms/button";
 import { useStoreActions } from "../../../store/hooks";
 import styles from "./SignUp.module.css";
 import Password from "../../../components/atoms/password";
+import signUpPic from "../../../styles/images/signup.svg";
+
 import auth from "../../../store/types/auth";
 import axios from "axios";
 import { getSimplifiedError } from "../../../lib/error";
@@ -46,14 +48,13 @@ const SignIn = (props) => {
     };
     try {
       const response = await axios.post("http://localhost:8080/signup", {
-        mode:'cors',
+        mode: "cors",
         payload,
       });
-       await message.success("Signup Success", 1.5);
-       setIsLogin(true);
+      await message.success("Signup Success", 1.5);
+      setIsLogin(true);
     } catch (error) {
-      message.error(error?.response?.data?.error, 1.5)
-
+      message.error(error?.response?.data?.error, 1.5);
     }
   };
   const handleChange = (e) => {
@@ -66,49 +67,58 @@ const SignIn = (props) => {
 
   return (
     <div className={styles.Main}>
-      <div className={styles.FormWrapper}>
-        <h2>Sign Up</h2>
-        <div>
-          <Form className={styles.Form} onChange={handleChange}>
-            <Form.Item name="username">
-              <Input
-                name="username"
-                placeholder="UserName"
-                value={userDetails.username}
-                className={styles.InputField}
-              />
-            </Form.Item>
-            <Form.Item name="email" onChange={handleChange}>
-              <Input
-                name="email"
-                placeholder="email"
-                value={userDetails.email}
-                className={styles.InputField}
-              />
-            </Form.Item>
-            <Form.Item name="password" onChange={handleChange}>
-              <Password
-                name="password"
-                placeholder="password"
-                className={styles.InputField}
-                value={userDetails.password}
-                iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                }
-              />
-            </Form.Item>
-            <Button
-              className={styles.Button}
-              buttonText="Sign In"
-              onClick={handleSignUp}
-            />
-          </Form>
-
+      <div className={styles.container}>
+        <div className={styles.FormWrapper}>
+          <h2>Sign Up</h2>
           <div>
-            already Signup switch To{" "}
-            <span onClick={handleLogInState}>Login</span>.
+            <Form className={styles.Form} onChange={handleChange}>
+              <Form.Item name="username">
+                <Input
+                  name="username"
+                  placeholder="UserName"
+                  value={userDetails.username}
+                  className={styles.InputField}
+                />
+              </Form.Item>
+              <Form.Item name="email" onChange={handleChange}>
+                <Input
+                  name="email"
+                  placeholder="email"
+                  value={userDetails.email}
+                  className={styles.InputField}
+                />
+              </Form.Item>
+              <Form.Item name="password" onChange={handleChange}>
+                <Password
+                  name="password"
+                  placeholder="password"
+                  className={styles.InputField}
+                  value={userDetails.password}
+                  iconRender={(visible) =>
+                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                  }
+                />
+              </Form.Item>
+              <Button
+                className={styles.Button}
+                buttonText="Sign In"
+                onClick={handleSignUp}
+              />
+            </Form>
+            <div>
+            </div>
           </div>
         </div>
+              <div className={styles.signupImage}>
+                <Image preview={false} width={300} src={signUpPic.src} />
+
+                <div className={styles.member}>
+                  <div className={styles.login} onClick={handleLogInState}>
+                    {" "}
+                    already Signup switch To Login.
+                  </div>
+                </div>
+              </div>
       </div>
     </div>
   );
