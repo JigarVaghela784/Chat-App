@@ -1,7 +1,7 @@
-import Home from "../views/Home";
+import Dashboard from "../views/Dashboard";
 
 const HomePage = () => {
-  return <Home />;
+  return <Dashboard />;
 };
 
 export default HomePage;
