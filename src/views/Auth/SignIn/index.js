@@ -1,18 +1,18 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { setUser } from "../../../store/actions/auth";
-import { Form, message, notification } from "antd";
+import { Form, Image, message } from "antd";
 import Input from "../../../components/atoms/input";
 import Button from "../../../components/atoms/button";
 import { useStoreActions } from "../../../store/hooks";
 import styles from "./SignIn.module.css";
 import Password from "../../../components/atoms/password";
+import loginPic from "../../../styles/images/login.svg";
 import axios from "axios";
-import { getSimplifiedError } from "../../../lib/error";
-import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
 const SignIn = (props) => {
+  console.log("login", loginPic);
   const { setIsLogin, setIsForgotPassword } = props;
   const { push } = useRouter();
   const [userDetails, setUserDetails] = useState({
@@ -20,7 +20,7 @@ const SignIn = (props) => {
     password: "",
     returnSecureToken: true,
   });
-  const actions = useStoreActions({ setUser });
+  const token = Cookies.get("token");
 
   const handleSignIn = async () => {
     const payload = {
@@ -29,18 +29,16 @@ const SignIn = (props) => {
     };
     try {
       const response = await axios.post("http://localhost:8080/login", {
-        mode:'cors',
+        mode: "cors",
         payload,
       });
-      console.log("response", response);
-      const token=response.data.token
-      Cookies.set("token",token)
-      push('/dashboard')  
-      message.success("Signup Success", 0.5);
-
+      const token = response.data.token;
+      Cookies.set("token", token);
+      await message.success("Signup Success", 0.5);
+      push("/dashboard");
     } catch (error) {
-      message.error(error?.response?.data?.error, 1.5)
-      console.log('error', error.response.data.error)
+      message.error(error?.response?.data?.error, 1.5);
+g('error', error.response.data.error)
     }
   };
   const handleChange = (e) => {
@@ -55,11 +53,27 @@ const SignIn = (props) => {
     setIsForgotPassword(true);
   };
 
+  useEffect(() => {
+    if (token) {
+      push("/dashboard");
+    }
+  }, [handleSignIn]);
+
   return (
     <div className={styles.Main}>
+      <div className={styles.container}>
+
+      <div className={styles.signInImage}>
+        <Image preview={false} width={300} src={loginPic.src} />
+
+        <div className={styles.member}>
+        <div className={styles.login} onClick={handleLogInState}>Not Signup yet ? SignUp</div>
+
+        </div>
+      </div>
       <div className={styles.FormWrapper}>
-        <h2>Sign In</h2>
-        <div>
+            <h1>Sign In</h1>
+        {/* <div> */}
           <Form className={styles.Form} onChange={handleChange}>
             <Form.Item name="email">
               <Input
@@ -81,20 +95,18 @@ const SignIn = (props) => {
                   visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                 }
               />
+                <div className={styles.resetPass}>
+                  <span className={styles.login} onClick={handleForgotPassword}>Forgot Password?</span>
+                </div>
             </Form.Item>
-            <div>
-              <span onClick={handleForgotPassword}>Forgot Password?</span>
-            </div>
             <Button
               className={styles.Button}
               buttonText="Sign In"
               onClick={handleSignIn}
             />
           </Form>
-          <div>
-            Not Signup yet ? <span onClick={handleLogInState}>SignUp</span>
-          </div>
         </div>
+      {/* </div> */}
       </div>
     </div>
   );

@@ -4,7 +4,6 @@ import { auth } from "../../../../firebaseConfig";
 export default async function ResetPassword(req, res) {
   if (req.method === "POST") {
     const email = req.body.email;
-    console.log('email', email)
     try {
       await sendPasswordResetEmail(auth, email);
       res.send({msg:"Success"})

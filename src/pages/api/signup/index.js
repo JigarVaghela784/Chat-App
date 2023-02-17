@@ -12,7 +12,6 @@ export default async function Signup(req, res) {
         password
       );
       const user = await response;
-      // console.log('user', user)
       res.send(user);
     } catch (error) {
       res.status(500).send(error);

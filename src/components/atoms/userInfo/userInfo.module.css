@@ -1,5 +1,24 @@
-.container{
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 5%;
+}
+.chatContainer{
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.container div span {
+  background-color: #686868;
+}
+.chatContainer div span {
+  background-color: #686868;
+}
+.avatarWrapper{
+    display: block;
+    width: 100%;
+}
+.hiddenAvatarWrapper{
+    display: none;
 }

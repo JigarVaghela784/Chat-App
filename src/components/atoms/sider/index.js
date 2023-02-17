@@ -29,12 +29,12 @@ const SiderBase = () => {
     }
   );
   return width > 750 ? (
-    <Sider width={250}>
+    <Sider width={350} >
       <Menu
         mode="inline"
         // defaultSelectedKeys={["1"]}
         // defaultOpenKeys={["sub1"]}
-        style={{ height: "100%", borderRight: 0 }}
+        style={{ height: "100%", borderRight: 0,backgroundColor:"#eee" }}
         // items={items}
       />
     </Sider>

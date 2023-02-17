@@ -1,30 +1,26 @@
 .mainWrapper {
   display: flex;
   justify-content: center;
-  align-items: center;
   flex-flow: column;
+  background: #e5ded8 url("../../styles/assets/whatsapp-bg.png");
+
   height: 100vh;
-  /* border: 2px solid; */
-  /* padding: 10px; */
 }
 .headerWrapper {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  height: 10%;
+  height: 8%;
   width: 100%;
   padding: 10px;
-  background-color: rgb(260, 260, 260);
+  background-color: #009688;
+  align-items: center;
 }
 .chatWrapper {
   display: flex;
-  align-items: center;
-  /* justify-content: flex-end; */
   flex-flow: column;
   height: calc(100vh - 150px);
   width: 100%;
   overflow-y: scroll;
-  background-color: rgb(240, 240, 240);
 }
 .chatWrapper::-webkit-scrollbar {
   width: 5px;
@@ -33,98 +29,46 @@
 .chatWrapper ::-webkit-scrollbar-thumb {
   border-radius: 50px;
 }
-.message {
-  position: relative;
-  margin: 10px;
-  width: 50%;
-  height: 30%;
-  padding: 5px 20px;
-}
-
-.left {
-  left: 25%;
-  word-wrap: break-word;
-}
-.right {
-  right: 25%;
-  word-wrap: break-word;
+.emojiWrapper {
+  bottom: 72px;
+  position: fixed;
+  right: 0px;
 }
 .fieldWrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: white;
+  background-color: #eee;
   width: 100%;
   padding: 10px;
 }
 .inputWrapper {
   margin-top: 10px;
   margin-bottom: 10px;
+  width: 100%;
 }
 .input {
-  width: 90vw;
+  /* width: 85vw; */
   border-radius: 5px;
 }
 .buttonWrapper {
   margin: 10px;
 }
-@media only screen and (min-width: 600px) {
-  .message {
-    position: relative;
-    margin: 10px;
-    width: 40%;
-    height: 30%;
-    padding: 5px 20px;
-  }
 
-  .left {
-    left: 30%;
-  }
-  .right {
-    right: 30%;
-  }
-  /* .input {
-    width: 90vw;
-    border-radius: 5px;
-    border: 2px solid blue;
-} */
-}
-/* @media only screen and (max-width: 750px)and(min-width:600){
-    .input {
-        width: 90vw;
-        border-radius: 5px;
-        border: 2px solid blue;
-    }
-} */
 @media only screen and (min-width: 768px) {
-  .input {
-    width: 60vw;
-  }
   .chatWrapper {
     height: calc(100vh - 80px);
   }
 }
-@media only screen and (min-width: 992px) {
-  .input {
-    width: 67vw;
-  }
-}
 @media only screen and (min-width: 1200px) {
-  .message {
-    position: relative;
-    margin: 10px;
-    width: 20%;
-    height: 20%;
-    padding: 5px 20px;
-  }
   .input {
-    width: 90vw;
+    width: 90%;
+
     border-radius: 5px;
   }
-  .left {
-    left: 40%;
-  }
-  .right {
-    right: 40%;
+  .inputWrapper div div div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
