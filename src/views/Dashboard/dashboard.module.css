@@ -12,8 +12,10 @@
   height: 8%;
   width: 100%;
   padding: 10px;
-  background-color: #009688;
+  background-color: #00a884;
   align-items: center;
+  padding: 10px 30px;
+
 }
 .chatWrapper {
   display: flex;
@@ -29,10 +31,11 @@
 .chatWrapper ::-webkit-scrollbar-thumb {
   border-radius: 50px;
 }
-.emojiWrapper {
+.emojiWrapper1 {
   bottom: 72px;
   position: fixed;
   right: 0px;
+  z-index: 9999;
 }
 .fieldWrapper {
   display: flex;
@@ -40,21 +43,25 @@
   align-items: center;
   background-color: #eee;
   width: 100%;
-  padding: 10px;
+  padding: 10px 30px;
 }
 .inputWrapper {
   margin-top: 10px;
   margin-bottom: 10px;
-  width: 100%;
+  width: 95%;
 }
 .input {
-  /* width: 85vw; */
   border-radius: 5px;
 }
 .buttonWrapper {
   margin: 10px;
 }
-
+.emojiWrapper{
+  cursor: pointer;
+  font-size: 20px;
+  /* display: flex; */
+  padding: 0 15px;
+}
 @media only screen and (min-width: 768px) {
   .chatWrapper {
     height: calc(100vh - 80px);
@@ -62,7 +69,7 @@
 }
 @media only screen and (min-width: 1200px) {
   .input {
-    width: 90%;
+    width: 100%;
 
     border-radius: 5px;
   }

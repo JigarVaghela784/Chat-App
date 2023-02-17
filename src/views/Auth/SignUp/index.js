@@ -111,8 +111,8 @@ const SignIn = (props) => {
             </div>
           </div>
         </div>
-              <div className={styles.signupImage}>
-                <Image preview={false} width={300} src={signUpPic.src} />
+              <div className={styles.signUpImage}>
+                <Image preview={false} width={250} src={signUpPic.src} />
 
                 <div className={styles.member}>
                   <div className={styles.login} onClick={handleLogInState}>

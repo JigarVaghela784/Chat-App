@@ -6,7 +6,7 @@ import { useStoreActions } from "../../store/hooks";
 import styles from "./dashboard.module.css";
 import Button from "../../components/atoms/button";
 import Input from "../../components/atoms/input";
-import { SendOutlined } from "@ant-design/icons";
+import { LogoutOutlined, SendOutlined, SmileOutlined } from "@ant-design/icons";
 import Chat from "../../components/atoms/chat";
 import { Form } from "antd";
 
@@ -21,21 +21,18 @@ import { async } from "@firebase/util";
 
 const socket = io("http://localhost:8080/", { transports: ["websocket"] });
 
-
-
-const Dashboard = ({speed = 5}) => {
+const Dashboard = ({ speed = 5 }) => {
   const { push } = useRouter();
   const [messages, setMessages] = useState([]);
   const [userData, setUserData] = useState(null);
   const [isEmoji, setIsEmoji] = useState(false);
-  const [emoji, setEmoji] = useState(null);
   const [form] = Form.useForm();
   const lastMessageRef = useRef(null);
-  const inputEl = useRef(null);
-  const [msg, setMsg] = useState("");
+  const inputElement = useRef(null);
+
+  const [msg, setMsg] = useState({ message: "" });
   const token = Cookies.get("token");
   const actions = useStoreActions({ logOutUser });
-
 
   const handleLogout = async () => {
     try {
@@ -58,7 +55,6 @@ const Dashboard = ({speed = 5}) => {
         mode: "cors",
       });
       setMessages(response?.data.message);
-
     } catch (error) {
       console.log("error", error);
     }
@@ -91,6 +87,7 @@ const Dashboard = ({speed = 5}) => {
   }, []);
 
   const handleSend = async () => {
+    console.log("msgHandleSend", msg);
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axios.post("http://localhost:8080/user/message", {
@@ -103,14 +100,15 @@ const Dashboard = ({speed = 5}) => {
         ...data,
       });
     } catch (error) {}
-    setMsg("");
+    setIsEmoji(false);
+    setMsg({ message: "" });
     form.resetFields();
   };
 
   const emojiHandler = () => {
     setIsEmoji(!isEmoji);
   };
-  // console.log("isEmoji", isEmoji);
+
   const deleteMessageHandler = async (msg) => {
     const id = msg._id;
     console.log("id", id);
@@ -130,24 +128,38 @@ const Dashboard = ({speed = 5}) => {
       console.log("error", error);
     }
   };
+
   useEffect(() => {
     socket.on("message", (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     });
     socket.on("delMessage", (message) => {
       messages = messages?.filter((delMsg) => delMsg?._id !== message?._id);
-      setMessages(messages)
+      setMessages(messages);
     });
     return () => {
       socket.off("message");
     };
   }, [messages]);
 
+  const addEmoji = (e) => {
+    const emoji = e.native;
+    setMsg({ message: msg?.message + emoji });
+  };
+  console.log("isEmoji", isEmoji);
+
   return (
     <div className={styles.mainWrapper}>
       <div className={styles.headerWrapper}>
-        <UserInfo user={userData?.name || userData?.email} />
-        <Button buttonText="Sign Out" onClick={handleLogout} />
+        <div>
+          <UserInfo user={userData?.name || userData?.email} />
+        </div>
+        <div
+          style={{ fontSize: "25px", color: "#eee", cursor: "pointer" }}
+          onClick={handleLogout}
+        >
+          <LogoutOutlined />
+        </div>
       </div>
 
       <div className={styles.chatWrapper}>
@@ -155,7 +167,6 @@ const Dashboard = ({speed = 5}) => {
           const isUser = e.name === userData?.name;
           const currentIndex = messages.findIndex((d) => d._id === e._id);
           const prevData = messages[currentIndex - 1];
-
 
           return (
             <Chat
@@ -166,28 +177,29 @@ const Dashboard = ({speed = 5}) => {
               time={e.createdAt}
               message={e}
               deleteMessageHandler={deleteMessageHandler}
-
             >
-              {e?.msg || e?.message}
+              {e?.msg || e?.message || e.emoji}
             </Chat>
           );
         })}
         <div ref={lastMessageRef}></div>
       </div>
-      {/* {isEmoji && (
-        <div className={styles.emojiWrapper} onClick={handleSendsEmoji}>
-          <Picker data={emoji} onEmojiSelect={console.log} />
+      {isEmoji && (
+        <div className={styles.emojiWrapper1}>
+          <Picker data={data} onEmojiSelect={addEmoji} />
         </div>
-      )} */}
+      )}
       <Form className={styles.fieldWrapper} form={form} onFinish={handleSend}>
         <Form.Item
           name="message"
           className={styles.inputWrapper}
-          onChange={(e) => setMsg(e.target.value)}
+          onChange={(e) => setMsg({ message: e.target.value })}
         >
-          <Input name="message" className={styles.input} />
+          <Input name="message" className={styles.input} msg={msg} />
         </Form.Item>
-        <div onClick={emojiHandler}>emoji</div>
+        <div className={styles.emojiWrapper} onClick={emojiHandler}>
+          <SmileOutlined />
+        </div>
         <Form.Item className={styles.buttonWrapper} onClick={handleSend}>
           <SendOutlined style={{ fontSize: "22px" }} />
         </Form.Item>
