@@ -63,6 +63,7 @@
 @media only screen and (min-width: 1200px) {
   .input {
     width: 90%;
+
     border-radius: 5px;
   }
   .inputWrapper div div div {

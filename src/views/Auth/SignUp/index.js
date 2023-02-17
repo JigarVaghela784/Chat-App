@@ -40,6 +40,7 @@ const SignIn = (props) => {
   //   }
   // };
 
+
   const handleSignUp = async () => {
     const payload = {
       name: userDetails.username,
@@ -55,6 +56,7 @@ const SignIn = (props) => {
       setIsLogin(true);
     } catch (error) {
       message.error(error?.response?.data?.error, 1.5);
+
     }
   };
   const handleChange = (e) => {

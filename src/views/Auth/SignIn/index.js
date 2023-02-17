@@ -38,6 +38,7 @@ const SignIn = (props) => {
       push("/dashboard");
     } catch (error) {
       message.error(error?.response?.data?.error, 1.5);
+g('error', error.response.data.error)
     }
   };
   const handleChange = (e) => {

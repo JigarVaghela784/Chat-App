@@ -10,6 +10,7 @@ export default function Dashboard() {
 
 export const getServerSideProps = async ({ req }) => {
   const getData=await getAllData()
+
   const localId = req.cookies["token"];
   if (!localId) {
     return {

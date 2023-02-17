@@ -65,6 +65,7 @@ const Chat = ({
             </div>
             {time !== "Invalid Date" ? (
               <div className={styles.time}>{time}</div>
+
             ) : (
               dayjs().format("hh:mm")
             )}

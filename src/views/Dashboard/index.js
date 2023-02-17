@@ -21,7 +21,9 @@ import { async } from "@firebase/util";
 
 const socket = io("http://localhost:8080/", { transports: ["websocket"] });
 
-const Dashboard = () => {
+
+
+const Dashboard = ({speed = 5}) => {
   const { push } = useRouter();
   const [messages, setMessages] = useState([]);
   const [userData, setUserData] = useState(null);
@@ -33,6 +35,7 @@ const Dashboard = () => {
   const [msg, setMsg] = useState("");
   const token = Cookies.get("token");
   const actions = useStoreActions({ logOutUser });
+
 
   const handleLogout = async () => {
     try {
@@ -55,6 +58,7 @@ const Dashboard = () => {
         mode: "cors",
       });
       setMessages(response?.data.message);
+
     } catch (error) {
       console.log("error", error);
     }
@@ -138,6 +142,7 @@ const Dashboard = () => {
       socket.off("message");
     };
   }, [messages]);
+
   return (
     <div className={styles.mainWrapper}>
       <div className={styles.headerWrapper}>
@@ -151,6 +156,7 @@ const Dashboard = () => {
           const currentIndex = messages.findIndex((d) => d._id === e._id);
           const prevData = messages[currentIndex - 1];
 
+
           return (
             <Chat
               prevData={prevData}
@@ -160,6 +166,7 @@ const Dashboard = () => {
               time={e.createdAt}
               message={e}
               deleteMessageHandler={deleteMessageHandler}
+
             >
               {e?.msg || e?.message}
             </Chat>
