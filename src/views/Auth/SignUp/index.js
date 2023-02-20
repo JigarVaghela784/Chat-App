@@ -40,7 +40,6 @@ const SignIn = (props) => {
   //   }
   // };
 
-
   const handleSignUp = async () => {
     const payload = {
       name: userDetails.username,
@@ -56,7 +55,6 @@ const SignIn = (props) => {
       setIsLogin(true);
     } catch (error) {
       message.error(error?.response?.data?.error, 1.5);
-
     }
   };
   const handleChange = (e) => {
@@ -107,20 +105,19 @@ const SignIn = (props) => {
                 onClick={handleSignUp}
               />
             </Form>
-            <div>
+            <div></div>
+          </div>
+        </div>
+        <div className={styles.signUpImage}>
+          <Image preview={false} width={250} src={signUpPic.src} />
+
+          <div className={styles.member}>
+            <div className={styles.login} onClick={handleLogInState}>
+              {" "}
+              already Signup switch To Login.
             </div>
           </div>
         </div>
-              <div className={styles.signUpImage}>
-                <Image preview={false} width={250} src={signUpPic.src} />
-
-                <div className={styles.member}>
-                  <div className={styles.login} onClick={handleLogInState}>
-                    {" "}
-                    already Signup switch To Login.
-                  </div>
-                </div>
-              </div>
       </div>
     </div>
   );

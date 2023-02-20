@@ -3,15 +3,9 @@ import styles from "./chat.module.css";
 import cls from "classnames";
 import dayjs from "dayjs";
 import UserInfo from "../userInfo";
-import { useState } from "react";
-import {
-  CloseCircleTwoTone,
-  CopyOutlined,
-  DeleteFilled,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { CloseCircleTwoTone } from "@ant-design/icons";
 import Cookies from "js-cookie";
-import axios from "axios";
+
 
 const Chat = ({
   children,
@@ -22,15 +16,29 @@ const Chat = ({
   message,
   deleteMessageHandler,
 }) => {
-  const [textToCopy, setTextToCopy] = useState(null);
-  time = dayjs(time).format("hh:mm");
-  const token = Cookies.get("token");
+  const newTime = dayjs(time).format("hh:mm");
+  const date = dayjs(time).format("DD-MM-YYYY");
+  const prevDate = dayjs(prevData?.createdAt).format("DD-MM-YYYY");
+  const yesterday = dayjs().subtract(1, "day").format("DD-MM-YYYY");
   const deleteMessage = () => {
     deleteMessageHandler(message);
   };
 
+  const findDate =
+    date === dayjs().format("DD-MM-YYYY")
+      ? "Today"
+      : date === yesterday
+      ? "Yesterday"
+      : date;
+
+  const nDate = prevDate !== date;
   return (
     <div>
+      {nDate && (
+        <div className={styles.dateWrapper}>
+          <div className={styles.dateData}>{findDate}</div>
+        </div>
+      )}
       <div
         className={
           !isUser
@@ -63,9 +71,8 @@ const Chat = ({
             <div>
               {prevData?.name !== username ? (!isUser ? username : "") : ""}
             </div>
-            {time !== "Invalid Date" ? (
-              <div className={styles.time}>{time}</div>
-
+            {newTime !== "Invalid Date" ? (
+              <div className={styles.time}>{newTime}</div>
             ) : (
               dayjs().format("hh:mm")
             )}
@@ -73,13 +80,9 @@ const Chat = ({
         </div>
         {isUser && (
           <div className={styles.deleteWrapper} onClick={deleteMessage}>
-            <CloseCircleTwoTone twoToneColor="#eb2f96"/>
+            <CloseCircleTwoTone twoToneColor="#eb2f96" />
           </div>
         )}
-        {/* <div style={{ cursor: "pointer" }} onClick={copyHandler}>
-          <CopyOutlined />
-        </div> */}
-        {/* </div> */}
       </div>
     </div>
   );

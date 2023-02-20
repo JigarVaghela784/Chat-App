@@ -61,18 +61,18 @@ const SignIn = (props) => {
   return (
     <div className={styles.Main}>
       <div className={styles.container}>
+        <div className={styles.signInImage}>
+          <Image preview={false} width={300} src={loginPic.src} />
 
-      <div className={styles.signInImage}>
-        <Image preview={false} width={300} src={loginPic.src} />
-
-        <div className={styles.member}>
-        <div className={styles.login} onClick={handleLogInState}>Not Signup yet ? SignUp</div>
-
+          <div className={styles.member}>
+            <div className={styles.login} onClick={handleLogInState}>
+              Not Signup yet ? SignUp
+            </div>
+          </div>
         </div>
-      </div>
-      <div className={styles.FormWrapper}>
-            <h1>Sign In</h1>
-        {/* <div> */}
+        <div className={styles.FormWrapper}>
+          <h1>Sign In</h1>
+          {/* <div> */}
           <Form className={styles.Form} onChange={handleChange}>
             <Form.Item name="email">
               <Input
@@ -94,9 +94,11 @@ const SignIn = (props) => {
                   visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                 }
               />
-                <div className={styles.resetPass}>
-                  <span className={styles.login} onClick={handleForgotPassword}>Forgot Password?</span>
-                </div>
+              <div className={styles.resetPass}>
+                <span className={styles.login} onClick={handleForgotPassword}>
+                  Forgot Password?
+                </span>
+              </div>
             </Form.Item>
             <Button
               className={styles.Button}
@@ -105,7 +107,7 @@ const SignIn = (props) => {
             />
           </Form>
         </div>
-      {/* </div> */}
+        {/* </div> */}
       </div>
     </div>
   );
