@@ -1,19 +1,12 @@
-import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { toast } from "react-toastify";
-import { setUser } from "../../../store/actions/auth";
 import { Form, Image, message } from "antd";
 import Input from "../../../components/atoms/input";
 import Button from "../../../components/atoms/button";
-import { useStoreActions } from "../../../store/hooks";
 import styles from "./SignUp.module.css";
 import Password from "../../../components/atoms/password";
 import signUpPic from "../../../styles/images/signup.svg";
 
-import auth from "../../../store/types/auth";
 import axios from "axios";
-import { getSimplifiedError } from "../../../lib/error";
 
 const SignIn = (props) => {
   const { setIsLogin } = props;
@@ -23,22 +16,7 @@ const SignIn = (props) => {
     password: "",
     returnSecureToken: true,
   });
-  const actions = useStoreActions({ setUser });
 
-  // const userData = async (userDetails, id) => {
-  //   const body = {
-  //     userId: id,
-  //     username: userDetails.username,
-  //     email: userDetails.email,
-  //   };
-  //   try {
-  //     const response = await axios.post(`/api/user`, body);
-  //     const data = await response.data;
-  //   } catch (e) {
-  //     message.error(e?.response?.data?.error?.message, 1.5);
-  //     console.error(e);
-  //   }
-  // };
 
   const handleSignUp = async () => {
     const payload = {
@@ -76,7 +54,7 @@ const SignIn = (props) => {
                 <Input
                   name="username"
                   placeholder="UserName"
-                  value={userDetails.username}
+                  // value={userDetails.username}
                   className={styles.InputField}
                 />
               </Form.Item>
@@ -84,7 +62,7 @@ const SignIn = (props) => {
                 <Input
                   name="email"
                   placeholder="email"
-                  value={userDetails.email}
+                  // value={userDetails.email}
                   className={styles.InputField}
                 />
               </Form.Item>
@@ -93,10 +71,7 @@ const SignIn = (props) => {
                   name="password"
                   placeholder="password"
                   className={styles.InputField}
-                  value={userDetails.password}
-                  iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                  }
+                  // value={userDetails.password}
                 />
               </Form.Item>
               <Button

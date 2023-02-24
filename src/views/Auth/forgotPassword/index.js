@@ -36,7 +36,6 @@ const ForgotPassword = (props) => {
           payload,
         }
       );
-      console.log("response", response);
       await message.success("Signup Success", 0.5);
       push("/dashboard");
     } catch (error) {
@@ -54,7 +53,6 @@ const ForgotPassword = (props) => {
               <Input
                 name="email"
                 placeholder="email"
-                value={userDetails.email}
                 className={styles.InputField}
               />
             </Form.Item>
@@ -62,7 +60,6 @@ const ForgotPassword = (props) => {
               <Password
                 name="password"
                 placeholder="Password"
-                value={userDetails.password}
                 className={styles.InputField}
               />
             </Form.Item>

@@ -1,11 +1,9 @@
-import { Avatar } from "antd";
+import { Image } from "antd";
 import styles from "./chat.module.css";
 import cls from "classnames";
 import dayjs from "dayjs";
 import UserInfo from "../userInfo";
-import { CloseCircleTwoTone } from "@ant-design/icons";
-import Cookies from "js-cookie";
-
+import { CloseCircleTwoTone, DownloadOutlined } from "@ant-design/icons";
 
 const Chat = ({
   children,
@@ -15,6 +13,7 @@ const Chat = ({
   prevData,
   message,
   deleteMessageHandler,
+  profileImage,
 }) => {
   const newTime = dayjs(time).format("hh:mm");
   const date = dayjs(time).format("DD-MM-YYYY");
@@ -22,6 +21,21 @@ const Chat = ({
   const yesterday = dayjs().subtract(1, "day").format("DD-MM-YYYY");
   const deleteMessage = () => {
     deleteMessageHandler(message);
+  };
+  const downloadMessage = () => {
+    fetch(message.image)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        console.log("url", url);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = message.imageName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      });
   };
 
   const findDate =
@@ -50,8 +64,15 @@ const Chat = ({
       >
         <div className={!isUser ? styles.avatarWrapper : styles.userAvatar}>
           {prevData !== username ? (
+            <UserInfo
+              src={profileImage}
+              prevData={prevData}
+              user={username}
+              withName={false}
+            />
+          ) : (
             <UserInfo prevData={prevData} user={username} withName={false} />
-          ) : null}
+          )}
         </div>
         <div
           className={
@@ -65,7 +86,7 @@ const Chat = ({
           }
         >
           <div className={styles.messageLength}>
-            <p>{children}</p>
+            {!message.image ? <p>{children}</p> : <Image src={message.image} />}
           </div>
           <div className={styles.userInfo}>
             <div>
@@ -78,11 +99,18 @@ const Chat = ({
             )}
           </div>
         </div>
-        {isUser && (
-          <div className={styles.deleteWrapper} onClick={deleteMessage}>
-            <CloseCircleTwoTone twoToneColor="#eb2f96" />
-          </div>
-        )}
+        <div className={styles.iconWrapper}>
+          {isUser && (
+            <div className={styles.iconBtn} onClick={deleteMessage}>
+              <CloseCircleTwoTone twoToneColor="#eb2f96" />
+            </div>
+          )}
+          {message.image && (
+            <div className={styles.iconBtn} onClick={downloadMessage}>
+              <DownloadOutlined />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

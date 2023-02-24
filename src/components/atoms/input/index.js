@@ -1,7 +1,7 @@
 import { Input as BaseInput } from "antd";
 
 const Input = (props) => {
-  const { onChange, name, buttonText, rest, className, placeholder, msg } =
+  const { onChange, name, rest, className, placeholder,msg } =
     props;
   return (
     <BaseInput

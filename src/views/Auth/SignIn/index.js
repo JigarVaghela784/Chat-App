@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { setUser } from "../../../store/actions/auth";
 import { Form, Image, message } from "antd";
 import Input from "../../../components/atoms/input";
 import Button from "../../../components/atoms/button";
@@ -12,7 +11,6 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const SignIn = (props) => {
-  console.log("login", loginPic);
   const { setIsLogin, setIsForgotPassword } = props;
   const { push } = useRouter();
   const [userDetails, setUserDetails] = useState({
@@ -72,27 +70,19 @@ const SignIn = (props) => {
         </div>
         <div className={styles.FormWrapper}>
           <h1>Sign In</h1>
-          {/* <div> */}
           <Form className={styles.Form} onChange={handleChange}>
             <Form.Item name="email">
               <Input
                 name="email"
                 placeholder="email"
-                value={userDetails.email}
                 className={styles.InputField}
               />
             </Form.Item>
-            <Form.Item name="password">
+            <Form.Item name="password"  onChange={handleChange}>
               <Password
                 name="password"
                 placeholder="password"
-                type="password"
                 className={styles.InputField}
-                value={userDetails.password}
-                onChange={handleChange}
-                iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                }
               />
               <div className={styles.resetPass}>
                 <span className={styles.login} onClick={handleForgotPassword}>
@@ -107,7 +97,6 @@ const SignIn = (props) => {
             />
           </Form>
         </div>
-        {/* </div> */}
       </div>
     </div>
   );

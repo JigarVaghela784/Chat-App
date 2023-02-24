@@ -17,6 +17,35 @@
   padding: 10px 30px;
 
 }
+.sendImageWrapper{
+  padding: 10px;
+  position: relative;
+  top: 10px;
+  cursor: pointer;
+}
+.sendImage{
+  display: none !important;
+}
+.imgPreview{
+  padding: 10px;
+  width: fit-content;
+  /* background: white; */
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  flex-flow: row-reverse;
+  background: white;
+  box-shadow: 0 19px 38px rgba(138, 138, 138, 0.3),
+  0 15px 12px rgba(196, 196, 196, 0.22);
+}
+.imagePreviewWrapper{
+  display: flex;
+  width: fit-content;
+  justify-content: flex-end;
+  align-items: flex-start;
+  flex-flow: row-reverse;
+  margin: 10px;
+}
 .chatWrapper {
   display: flex;
   flex-flow: column;
@@ -55,7 +84,19 @@
 }
 .buttonWrapper {
   margin: 10px;
+  cursor: pointer;
 }
+.buttonWrapperDisable{
+  margin: 10px;
+  cursor: not-allowed;
+
+}
+.disableButton{
+  color: #777777;
+}
+/* .button{
+  color: #00a884;
+} */
 .emojiWrapper{
   cursor: pointer;
   font-size: 20px;

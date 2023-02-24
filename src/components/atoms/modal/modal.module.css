@@ -1,0 +1,15 @@
+.uploadWrapper{
+    margin: 0 auto;
+    display: flex;
+    background-color: #ccc;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    height: 10rem;
+    cursor: pointer;
+}
+
+.upload{
+    display: none ;
+}
