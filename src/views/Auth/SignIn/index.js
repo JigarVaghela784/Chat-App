@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { setUser } from "../../../store/actions/auth";
 import { Form, Image, message } from "antd";
 import Input from "../../../components/atoms/input";
 import Button from "../../../components/atoms/button";
@@ -12,7 +11,6 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const SignIn = (props) => {
-  console.log("login", loginPic);
   const { setIsLogin, setIsForgotPassword } = props;
   const { push } = useRouter();
   const [userDetails, setUserDetails] = useState({
@@ -38,7 +36,6 @@ const SignIn = (props) => {
       push("/dashboard");
     } catch (error) {
       message.error(error?.response?.data?.error, 1.5);
-g('error', error.response.data.error)
     }
   };
   const handleChange = (e) => {
@@ -62,42 +59,36 @@ g('error', error.response.data.error)
   return (
     <div className={styles.Main}>
       <div className={styles.container}>
+        <div className={styles.signInImage}>
+          <Image preview={false} width={300} src={loginPic.src} />
 
-      <div className={styles.signInImage}>
-        <Image preview={false} width={300} src={loginPic.src} />
-
-        <div className={styles.member}>
-        <div className={styles.login} onClick={handleLogInState}>Not Signup yet ? SignUp</div>
-
+          <div className={styles.member}>
+            <div className={styles.login} onClick={handleLogInState}>
+              Not Signup yet ? SignUp
+            </div>
+          </div>
         </div>
-      </div>
-      <div className={styles.FormWrapper}>
-            <h1>Sign In</h1>
-        {/* <div> */}
+        <div className={styles.FormWrapper}>
+          <h1>Sign In</h1>
           <Form className={styles.Form} onChange={handleChange}>
             <Form.Item name="email">
               <Input
                 name="email"
                 placeholder="email"
-                value={userDetails.email}
                 className={styles.InputField}
               />
             </Form.Item>
-            <Form.Item name="password">
+            <Form.Item name="password"  onChange={handleChange}>
               <Password
                 name="password"
                 placeholder="password"
-                type="password"
                 className={styles.InputField}
-                value={userDetails.password}
-                onChange={handleChange}
-                iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                }
               />
-                <div className={styles.resetPass}>
-                  <span className={styles.login} onClick={handleForgotPassword}>Forgot Password?</span>
-                </div>
+              <div className={styles.resetPass}>
+                <span className={styles.login} onClick={handleForgotPassword}>
+                  Forgot Password?
+                </span>
+              </div>
             </Form.Item>
             <Button
               className={styles.Button}
@@ -106,7 +97,6 @@ g('error', error.response.data.error)
             />
           </Form>
         </div>
-      {/* </div> */}
       </div>
     </div>
   );

@@ -10,7 +10,19 @@
   margin: 10px;
   width: -moz-fit-content !important;
   width: fit-content !important;
-  max-width: 45%;
+  /* max-width: 45%; */
+}
+.dateWrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.dateData{
+  padding: 12px;
+  margin: 20px 0 40px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 19px 38px rgb(138 138 138 / 30%), 0 15px 12px rgb(196 196 196 / 22%);
 }
 .message__user {
   display: flex;
@@ -18,10 +30,9 @@
   margin-left: auto;
   text-align: left !important;
 }
+
 .message__guest {
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
 }
 .message__userWrapper{
   margin-top: -35px;
@@ -29,6 +40,14 @@
   flex-flow: row-reverse;
   margin-left: auto;
   text-align: left !important;
+}
+.message__userWrapper:hover{
+  margin-top: -35px;
+  display: flex;
+  flex-flow: row-reverse;
+  margin-left: auto;
+  text-align: left !important;
+  max-width: 50.82% !important;
 }
 .message__prevUser {
   min-width: 200px;
@@ -102,8 +121,17 @@
   min-width: 200px;
 }
 .avatarWrapper{
-  position: relative;
-  bottom: 20px;
+  /* position: relative;
+  bottom: 20px; */
+  /* border: 2px solid; */
+  height: 100%;
+}
+.iconWrapper{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-flow: column;
+
 }
 .userAvatar{
   position: relative;
@@ -129,10 +157,10 @@
   margin: 0;
   padding: 0;
 }
-.deleteWrapper{
+.iconBtn{
   display: none;
 }
-.message:hover .deleteWrapper{
+.message:hover .iconBtn{
   /* display: block; */
   cursor: pointer;
   display: flex;
@@ -140,4 +168,18 @@
   align-items: center;
   font-size: 30px;
   padding: 0 10px;
+}
+.messageStatus{
+  padding: 5px;
+  height: 5px;
+  width: 5px;
+  background: red;
+  border-radius: 50px;
+}
+.messageStatusSeen{
+  padding: 5px;
+  height: 5px;
+  width: 5px;
+  background: green;
+  border-radius: 50px;
 }
