@@ -27,7 +27,6 @@ const Chat = ({
       .then((response) => response.blob())
       .then((blob) => {
         const url = URL.createObjectURL(blob);
-        console.log("url", url);
         const link = document.createElement("a");
         link.href = url;
         link.download = message.imageName;
@@ -86,7 +85,7 @@ const Chat = ({
           }
         >
           <div className={styles.messageLength}>
-            {!message.image ? <p>{children}</p> : <Image src={message.image} />}
+            {!message.image ? <p>{children}</p> : <Image className={styles.chatImage} src={message.image} />}
           </div>
           <div className={styles.userInfo}>
             <div>
@@ -107,7 +106,7 @@ const Chat = ({
           )}
           {message.image && (
             <div className={styles.iconBtn} onClick={downloadMessage}>
-              <DownloadOutlined />
+              <DownloadOutlined style={{color: '#2196f3' }} />
             </div>
           )}
         </div>

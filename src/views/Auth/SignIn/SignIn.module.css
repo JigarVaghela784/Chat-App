@@ -14,7 +14,7 @@
   align-items: center;
   flex-flow: column-reverse;
 
-  width: 40%;
+  width: 300px;
   padding: 50px;
     box-shadow: 0 19px 38px rgba(138, 138, 138, 0.3),
       0 15px 12px rgba(196, 196, 196, 0.22);
@@ -52,7 +52,7 @@
   display: none;
 }
 @media only screen and (min-width: 768px) {
-  .LoginImage{
+  .signInImage img{
     width: 250px;
   }
 }
@@ -63,6 +63,7 @@
     justify-content: space-between;
     align-items: center;
     flex-flow: row;
+    width: 40%;
   }
   .signInImage img{
     display: block;

@@ -6,7 +6,7 @@ import Button from "../../../components/atoms/button";
 import { useStoreActions } from "../../../store/hooks";
 import styles from "./SignIn.module.css";
 import Password from "../../../components/atoms/password";
-import loginPic from "../../../styles/images/login.svg";
+import loginPic from "../../../styles/assets/login.svg";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -26,7 +26,7 @@ const SignIn = (props) => {
       password: userDetails.password,
     };
     try {
-      const response = await axios.post("http://localhost:8080/login", {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
         mode: "cors",
         payload,
       });
@@ -78,7 +78,7 @@ const SignIn = (props) => {
                 className={styles.InputField}
               />
             </Form.Item>
-            <Form.Item name="password"  onChange={handleChange}>
+            <Form.Item name="password" onChange={handleChange}>
               <Password
                 name="password"
                 placeholder="password"

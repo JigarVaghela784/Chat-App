@@ -1,23 +1,25 @@
 import { useRouter } from "next/router";
-import { useReducerData } from "../../store/hooks";
 import Button from "../../components/atoms/button";
+import styles from "./home.module.css"
 
 const Home = () => {
   const { push } = useRouter();
-  const user = useReducerData("auth", "user", {});
   // eslint-disable-next-line no-console
 
   const handleRedirect = () => {
     return push("/auth");
   };
   return (
-    <div>
-      <div>
+    <div className={styles.container}>
+      <div className={styles.homeWrapper}>
+
+      <div >
         <h1>Chat Room</h1>
       </div>
 
       <Button buttonText="Go to Login Page" onClick={handleRedirect} />
     </div>
+      </div>
   );
 };
 
