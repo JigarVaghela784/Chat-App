@@ -1,9 +1,9 @@
-import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Form, message, notification } from "antd";
+import { Form, message, notification, Image } from "antd";
 import Input from "../../../components/atoms/input";
 import Button from "../../../components/atoms/button";
 import styles from "./forgotPassword.module.css";
+import forgotPasswordPic from "../../../styles/assets/forgot_password.svg";
 import axios from "axios";
 import Password from "../../../components/atoms/password";
 
@@ -30,7 +30,7 @@ const ForgotPassword = (props) => {
     };
     try {
       const response = await axios.patch(
-        "http://localhost:8080/forgotPassword",
+        `${process.env.NEXT_PUBLIC_API_URL}/forgotPassword`,
         {
           mode: "cors",
           payload,
@@ -45,9 +45,18 @@ const ForgotPassword = (props) => {
 
   return (
     <div className={styles.Main}>
-      <div className={styles.FormWrapper}>
-        <h2>Reset Password</h2>
-        <div>
+      <div className={styles.container}>
+        <div className={styles.forgotPasswordImage}>
+          <Image preview={false} width={250} src={forgotPasswordPic.src} />
+
+          <div className={styles.resetPass}>
+            <span className={styles.login} onClick={handleLogInState}>
+              Back to SignIn.
+            </span>
+          </div>
+        </div>
+        <div className={styles.FormWrapper}>
+          <h1>Reset Password</h1>
           <Form className={styles.Form} onChange={handleChange}>
             <Form.Item name="email">
               <Input
@@ -56,20 +65,19 @@ const ForgotPassword = (props) => {
                 className={styles.InputField}
               />
             </Form.Item>
-            <Form.Item name="password">
+            <Form.Item name="password" onChange={handleChange}>
               <Password
                 name="password"
-                placeholder="Password"
+                placeholder="password"
                 className={styles.InputField}
               />
             </Form.Item>
             <Button
               className={styles.Button}
-              buttonText="Submit"
+              buttonText="Submit  "
               onClick={handleForgotPassword}
             />
           </Form>
-          <div onClick={handleLogInState}>Back to SignIn.</div>
         </div>
       </div>
     </div>

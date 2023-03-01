@@ -11,7 +11,7 @@ const UserInfo = ({ user, prevData, withName = true,src }) => {
             : styles.hiddenAvatarWrapper
         }
       >
-        <Avatar src={src}>{firstLetter}</Avatar>
+        <Avatar src={src} style={{fontSize:"25px"}}>{firstLetter}</Avatar>
       </div>
       <div>{withName && <h3>{user}</h3>}</div>
     </div>

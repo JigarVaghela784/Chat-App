@@ -14,9 +14,13 @@
 }
 .container div span {
   background-color: #686868;
+  width: 45px;
+  height: 45px;
 }
 .chatContainer div span {
   background-color: #686868;
+  width: 45px;
+  height: 45px;
 }
 .avatarWrapper{
     display: block;

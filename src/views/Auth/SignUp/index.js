@@ -4,7 +4,7 @@ import Input from "../../../components/atoms/input";
 import Button from "../../../components/atoms/button";
 import styles from "./SignUp.module.css";
 import Password from "../../../components/atoms/password";
-import signUpPic from "../../../styles/images/signup.svg";
+import signUpPic from "../../../styles/assets/signup.svg";
 
 import axios from "axios";
 
@@ -17,7 +17,6 @@ const SignIn = (props) => {
     returnSecureToken: true,
   });
 
-
   const handleSignUp = async () => {
     const payload = {
       name: userDetails.username,
@@ -25,7 +24,7 @@ const SignIn = (props) => {
       password: userDetails.password,
     };
     try {
-      const response = await axios.post("http://localhost:8080/signup", {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/signup`, {
         mode: "cors",
         payload,
       });
