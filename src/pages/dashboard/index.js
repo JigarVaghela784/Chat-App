@@ -1,18 +1,17 @@
 import PrivateLayout from "../../layout/PrivateLayout";
 import {
   getUserData,
-  userProfile,
 } from "../../lib/profile/profileData";
 import DashboardView from "../../views/Dashboard";
 
-export default function Dashboard({ getUser, getProfile }) {
-  return <DashboardView getUser={getUser} getProfile={getProfile}  />;
+export default function Dashboard({ getUser }) {
+  return <DashboardView getUser={getUser}  />;
 }
 
 export const getServerSideProps = async ({ req }) => {
   const token = req.headers.cookie.replace("token=", "");
-  const getUser = await getUserData(token);
-  const getProfile = await userProfile(token);
+  const getUser = await getUserData(token)||null;
+  
   const localId = req.cookies["token"];
   if (!localId) {
     return {
@@ -25,7 +24,6 @@ export const getServerSideProps = async ({ req }) => {
   return {
     props: {
       getUser,
-      getProfile,
     },
   };
 };

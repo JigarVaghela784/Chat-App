@@ -8,9 +8,9 @@ const ChatSection = (props) => {
   const { messages, userData, isVisible, socket } = props;
   const lastMessageRef = useRef(null);
   const token = Cookies.get("token");
+
   // delete user message
   const deleteMessageHandler = async (msg) => {
-    // console.log("msg", msg);
     const id = msg._id;
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -24,9 +24,11 @@ const ChatSection = (props) => {
       socket.emit("deleteMessage", { ...data });
     } catch (error) {}
   };
+
   useEffect(() => {
     lastMessageRef.current.scrollIntoView();
   }, [messages]);
+  
   return (
     <div className={styles.chatWrapper}>
       {messages?.map((e, index) => {

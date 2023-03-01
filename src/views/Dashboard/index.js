@@ -8,7 +8,7 @@ import { CloseOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Image } from "antd";
 
 import UserInfo from "../../components/atoms/userInfo";
-import { io } from "socket.io-client";
+import io from "socket.io-client";
 import Cookies from "js-cookie";
 import axios from "axios";
 import data from "@emoji-mart/data";
@@ -19,22 +19,23 @@ import ChatInput from "../../components/chatInput";
 import ChatSection from "../../components/chatSection";
 
 const socket = io(`${process.env.NEXT_PUBLIC_API_URL}/`, {
-  transports: ['polling',"websocket"]
+  transports: ["polling", "websocket"],
 });
 
-const Dashboard = ({ getUser, getProfile }) => {
+const Dashboard = ({ getUser }) => {
   const { push } = useRouter();
-  const [messages, setMessages] = useState();
+  const [messages, setMessages] = useState([]);
   const [userData] = useState(getUser);
   const [isEmoji, setIsEmoji] = useState(false);
   const [uploadImage, setUploadImage] = useState(null);
-  const [profileImage, setProfileImage] = useState(getProfile);
+  const [profileImage, setProfileImage] = useState();
   const [open, setOpen] = useState(false);
   const [isUpload, setIsUpload] = useState(false);
   const [chatImage, setChatImage] = useState(null);
   const [preview, setPreview] = useState();
   const [isVisible, setIsVisible] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [uptMsgProfile, setUptMsgProfile] = useState(null);
   const [msg, setMsg] = useState({ message: "" });
   const token = Cookies.get("token");
   const actions = useStoreActions({ logOutUser });
@@ -45,7 +46,6 @@ const Dashboard = ({ getUser, getProfile }) => {
       setPreview(undefined);
       return;
     }
-
     const objectUrl = URL.createObjectURL(chatImage);
     setPreview(objectUrl);
 
@@ -75,40 +75,82 @@ const Dashboard = ({ getUser, getProfile }) => {
     }
   };
 
+  const userProfile = async () => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/avatar`,
+        {
+          mode: "cors",
+        }
+      );
+      const data = await response.data;
+      const blob = new Blob([Buffer.from(data)]);
+      const profileUrl = URL.createObjectURL(blob);
+      setProfileImage(profileUrl);
+      if (isUpload) {
+        updateMsgProfile();
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   const getAllMessage = async () => {
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/message`, {
-        mode: "cors",
-      });
-      response.data.message.map((element) => {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/message`,
+        {
+          mode: "cors",
+        }
+      );
+      response?.data.map((element) => {
         const blob = new Blob([Buffer.from(element.avatar)]);
         element.avatar = URL.createObjectURL(blob);
         if (element.image) {
           const blobImage = new Blob([Buffer.from(element.image)]);
           element.image = URL.createObjectURL(blobImage);
         }
-        setMessages(response?.data.message);
+        setMessages(response?.data);
       });
     } catch (error) {
       console.log("error", error);
     }
   };
-  
+
   //Upload user profile to database
   const uploadProfile = async () => {
     const formData = new FormData();
     formData.append("avatar", uploadImage);
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const response = await axios.post(
+      await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/user/avatar`,
         formData,
         {
           mode: "core",
         }
       );
+      setUptMsgProfile(uploadImage);
       setIsUpload(true);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+  const updateMsgProfile = async () => {
+    const formData = new FormData();
+    formData.append("avatar", uptMsgProfile);
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/message/avatar`,
+        formData,
+        {
+          mode: "core",
+        }
+      );
+      getAllMessage();
     } catch (error) {
       console.log("error", error);
     }
@@ -119,6 +161,7 @@ const Dashboard = ({ getUser, getProfile }) => {
       push("/auth");
     }
     getAllMessage();
+    userProfile();
     const handleVisibilityChange = () => {
       setIsVisible(!document.hidden);
     };
@@ -129,11 +172,12 @@ const Dashboard = ({ getUser, getProfile }) => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
-
   useEffect(() => {
     if (isUpload) {
-      setProfileImage(getProfile);
-      setIsUpload(false);
+      setTimeout(() => {
+        userProfile();
+        setIsUpload(false);
+      }, 2000);
     }
 
     if (isVisible) {
@@ -151,6 +195,8 @@ const Dashboard = ({ getUser, getProfile }) => {
       setUnreadCount(unreadCount + 1);
     }
     socket.on("message", (message) => {
+      const avatarBlob = new Blob([Buffer.from(message.avatar)]);
+      message.avatar = URL.createObjectURL(avatarBlob);
       if (message?.image) {
         const blob = new Blob([Buffer.from(message.image)]);
         message.image = URL.createObjectURL(blob);

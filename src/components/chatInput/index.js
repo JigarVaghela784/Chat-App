@@ -69,14 +69,14 @@ const ChatInput = (props) => {
       >
         <Input name="message" className={styles.input} msg={msg} />
       </Form.Item>
-      <Form.Item>
+      <Form.Item name="image" onChange={handleFileUpload}>
         <label className={styles.sendImageWrapper}>
           <UploadOutlined style={{ fontSize: "30px", color: "#555" }} />
           <input
+            name="image"
             className={styles.sendImage}
             accept="image/*"
             type="file"
-            onChange={handleFileUpload}
           />
         </label>
       </Form.Item>
@@ -84,6 +84,7 @@ const ChatInput = (props) => {
         <SmileOutlined />
       </div>
       <Form.Item
+      name="sendBtn"
         className={
           msg.message !== "" || chatImage !== null
             ? styles.buttonWrapper
