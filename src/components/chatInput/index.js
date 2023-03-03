@@ -16,9 +16,12 @@ const ChatInput = (props) => {
     setIsEmoji,
     handleFileUpload,
     isEmoji,
+    userId,
   } = props;
   const [form] = Form.useForm();
   const token = Cookies.get("token");
+  const messageId=userId
+  // console.log('messageId', messageId)
   // send user message
   const handleSend = async () => {
     if (msg.message !== "") {
@@ -28,7 +31,7 @@ const ChatInput = (props) => {
           `${process.env.NEXT_PUBLIC_API_URL}/user/message`,
           {
             mode: "cors",
-            message: msg,
+            message: { ...msg, messageId },
           }
         );
 
@@ -69,7 +72,7 @@ const ChatInput = (props) => {
       >
         <Input name="message" className={styles.input} msg={msg} />
       </Form.Item>
-      <Form.Item name="image" onChange={handleFileUpload}>
+      <Form.Item onChange={handleFileUpload}>
         <label className={styles.sendImageWrapper}>
           <UploadOutlined style={{ fontSize: "30px", color: "#555" }} />
           <input
@@ -84,7 +87,7 @@ const ChatInput = (props) => {
         <SmileOutlined />
       </div>
       <Form.Item
-      name="sendBtn"
+        name="sendBtn"
         className={
           msg.message !== "" || chatImage !== null
             ? styles.buttonWrapper

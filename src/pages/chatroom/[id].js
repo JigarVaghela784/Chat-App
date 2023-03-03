@@ -1,26 +1,21 @@
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import styles from "./dashboard.module.css";
-import { CloseOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Image, message as baseMessage } from "antd";
-
-import UserInfo from "../../components/atoms/userInfo";
-import io from "socket.io-client";
-import Cookies from "js-cookie";
+import { io } from "socket.io-client";
 import axios from "axios";
-import data from "@emoji-mart/data";
-import Picker from "@emoji-mart/react";
-import Head from "next/head";
-import Modal from "../../components/atoms/modal";
-import ChatInput from "../../components/chatInput";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 import ChatSection from "../../components/chatSection";
-
+import { CloseOutlined, LogoutOutlined } from "@ant-design/icons";
+import { Image } from "antd";
+import ChatInput from "../../components/chatInput";
+import styles from "../../views/Dashboard/dashboard.module.css";
+import Head from "next/head";
+import UserInfo from "../../components/atoms/userInfo";
+import { useRouter } from "next/router";
+import { getUserData } from "../../lib/profile/profileData";
 const socket = io(`${process.env.NEXT_PUBLIC_API_URL}/`, {
   transports: ["websocket"],
 });
-
-const Dashboard = ({ getUser }) => {
-  const { push } = useRouter();
+const ChatRoom = (getUser) => {
+  console.log("getUser", getUser);
   const [messages, setMessages] = useState([]);
   const [userData] = useState(getUser);
   const [isEmoji, setIsEmoji] = useState(false);
@@ -35,8 +30,10 @@ const Dashboard = ({ getUser }) => {
   const [uptMsgProfile, setUptMsgProfile] = useState(null);
   const [msg, setMsg] = useState({ message: "" });
   const token = Cookies.get("token");
+  const router = useRouter();
+  const userId = router.query?.id?.split("&");
+  console.log("userId", userId);
 
-  // create a preview as a side effect
   useEffect(() => {
     if (!chatImage) {
       setPreview(undefined);
@@ -240,7 +237,8 @@ const Dashboard = ({ getUser }) => {
     setChatImage(null);
     setPreview(null);
   };
-
+  console.log("messages", messages);
+  console.log("userData", userData);
   return (
     <div className={styles.mainWrapper}>
       <Head>
@@ -250,7 +248,6 @@ const Dashboard = ({ getUser }) => {
           <title>chat</title>
         )}
       </Head>
-
       <div className={styles.headerWrapper}>
         <div style={{ cursor: "pointer" }} onClick={handleProfileModal}>
           <UserInfo
@@ -275,9 +272,7 @@ const Dashboard = ({ getUser }) => {
           />
         )}
       </div>
-
-
-       <ChatSection
+      <ChatSection
         messages={messages}
         userData={userData}
         isVisible={isVisible}
@@ -311,9 +306,28 @@ const Dashboard = ({ getUser }) => {
         setChatImage={setChatImage}
         handleFileUpload={handleFileUpload}
         isEmoji={isEmoji}
-      /> 
+        userId={userId}
+      />
     </div>
   );
 };
 
-export default Dashboard;
+export default ChatRoom;
+
+export const getServerSideProps = async ({ req }) => {
+  const token = req.headers.cookie.replace("token=", "");
+  const getUser = (await getUserData(token)) || null;
+
+  const localId = req.cookies["token"];
+  if (!localId) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: getUser,
+  };
+};

@@ -1,45 +1,73 @@
 import styles from "./SiderBase.module.css";
 import {
-  LaptopOutlined,
-  NotificationOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Layout, Menu, theme, MenuProps } from "antd";
-import { createElement, useState } from "react";
+import {  Layout, Menu,  } from "antd";
+import { createElement, useEffect, useState } from "react";
 import useWindowSize from "../../../store/hooks/useWindowSize";
+import axios from "axios";
+import Cookies from "js-cookie";
+import Router from "next/router";
 const { Sider } = Layout;
 
 const SiderBase = () => {
+  const { push } = Router;
+  const token = Cookies.get("token");
+  const [users, setUsers] = useState([]);
+  const [userData, setUserData] = useState(null);
   const { width } = useWindowSize();
-  const items = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
-    (icon, index) => {
-      const key = String(index + 1);
+  const allUser = async () => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/finduser`
+      );
+      const data = await response.data;
+      setUsers(data);
+    } catch (error) {}
+  };
+  const user = async () => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/user`
+      );
+      const data = await response.data;
+      setUserData(data.user);
+    } catch (error) {}
+  };
+  useEffect(() => {
+    allUser();
+    user();
+  }, []);
+  console.log("userData", userData);
+  console.log("users", users);
+  const items = users.map((user, index) => {
+    if (user._id !== userData?._id) {
       return {
-        key: `sub${key}`,
-        icon: createElement(icon),
-        label: `subnav ${key}`,
-        children: new Array(4).fill(null).map((_, j) => {
-          const subKey = index * 4 + j + 1;
-          return {
-            key: subKey,
-            label: `option${subKey}`,
-          };
-        }),
+        key: `${user._id}`,
+        icon: createElement(UserOutlined),
+        label: `${user.name}`,
+        route: `/chatroom/${user._id}`,
       };
     }
-  );
-  return width > 750 ? (
-    <Sider width={350} >
-      <Menu
-        mode="inline"
-        // defaultSelectedKeys={["1"]}
-        // defaultOpenKeys={["sub1"]}
-        style={{ height: "100%", borderRight: 0,backgroundColor:"#eee" }}
-        // items={items}
-      />
-    </Sider>
-  ) : (
-    ""
+  });
+  return (
+    width > 750 && (
+      <Sider width={350}>
+        <Menu
+          defaultSelectedKeys={["1"]}
+          mode="inline"
+          items={items}
+          style={{ height: "100%", borderRight: 0, backgroundColor: "#eee" }}
+          onClick={(value) => {
+            const findData = items.find((element) => element?.key === value.key);
+            console.log('findData', findData.route+userData?._id)
+            push(`${findData.route}&${userData._id}`);
+          }}
+        />
+      </Sider>
+    )
   );
 };
 

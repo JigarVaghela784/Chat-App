@@ -52,6 +52,7 @@
   height: calc(100vh - 150px);
   width: 100%;
   overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 .chatWrapper::-webkit-scrollbar {
   width: 5px;
@@ -105,7 +106,7 @@
 }
 @media only screen and (min-width: 768px) {
   .chatWrapper {
-    height: calc(100vh - 80px);
+    height: calc(100vh - 151px);
   }
 }
 @media only screen and (min-width: 1200px) {
