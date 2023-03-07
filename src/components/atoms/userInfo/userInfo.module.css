@@ -4,6 +4,14 @@
   align-items: center;
   color: white;
 }
+.profileContainer{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #00a884;
+  padding: 13px;
+  border-right:1px solid #009688;
+}
 .container div{
   margin-right: 10px;
 }
@@ -21,6 +29,10 @@
   background-color: #686868;
   width: 45px;
   height: 45px;
+}
+.profileAvatarWrapper{
+  display: block;
+  width: 10%;
 }
 .avatarWrapper{
     display: block;

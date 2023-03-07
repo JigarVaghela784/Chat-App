@@ -4,21 +4,25 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import ChatSection from "../../components/chatSection";
 import { CloseOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Image } from "antd";
+import { Image, Modal } from "antd";
 import ChatInput from "../../components/chatInput";
 import styles from "../../views/Dashboard/dashboard.module.css";
 import Head from "next/head";
 import UserInfo from "../../components/atoms/userInfo";
 import { useRouter } from "next/router";
+import PrivateLayout from "../../layout/PrivateLayout";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 import { getUserData } from "../../lib/profile/profileData";
 const socket = io(`${process.env.NEXT_PUBLIC_API_URL}/`, {
   transports: ["websocket"],
 });
 const ChatRoom = (getUser) => {
-  console.log("getUser", getUser);
   const [messages, setMessages] = useState([]);
   const [userData] = useState(getUser);
+  const [chatUserData, setChatUserData] = useState(null)
   const [isEmoji, setIsEmoji] = useState(false);
+
   const [uploadImage, setUploadImage] = useState(null);
   const [profileImage, setProfileImage] = useState();
   const [open, setOpen] = useState(false);
@@ -28,12 +32,44 @@ const ChatRoom = (getUser) => {
   const [isVisible, setIsVisible] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
   const [uptMsgProfile, setUptMsgProfile] = useState(null);
+  const [chatId, setChatId] = useState(null);
   const [msg, setMsg] = useState({ message: "" });
   const token = Cookies.get("token");
   const router = useRouter();
-  const userId = router.query?.id?.split("&");
-  console.log("userId", userId);
+  const userId = router.query?.id;
+  const getUserChatId = async () => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/chatuser/${userId}`,
+        {
+          mode: "core",
+        }
+      );
+      const data = await response?.data;
+      setChatId(data);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
+  const getChatUserData = async () => {
+    const id = userId?.split("&")[0];
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/finduser/${id}`,
+        {
+          mode: "cors",
+        }
+      );
+      const data = await response.data;
+      const blob = new Blob([Buffer.from(data?.avatar, "base64")]);
+      data.avatar = URL.createObjectURL(blob);
+      setChatUserData(data);
+    } catch (error) {}
+  };
+  console.log('chatId', chatId)
   useEffect(() => {
     if (!chatImage) {
       setPreview(undefined);
@@ -95,12 +131,11 @@ const ChatRoom = (getUser) => {
       console.log("error", error);
     }
   };
-
   const getAllMessage = async () => {
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/user/message`,
+        `${process.env.NEXT_PUBLIC_API_URL}/user/message/${chatId}`,
         {
           mode: "cors",
         }
@@ -118,7 +153,6 @@ const ChatRoom = (getUser) => {
       console.log("error", error);
     }
   };
-
   //Upload user profile to database
   const uploadProfile = async () => {
     const formData = new FormData();
@@ -155,22 +189,29 @@ const ChatRoom = (getUser) => {
       console.log("error", error);
     }
   };
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("connected to server");
+    });
+    socket.emit("join", { ...userData, room: chatId }, (error) => {
+      if (error) {
+        alert(error);
+        // location.href = "/";
+      }
+    });
+    getAllMessage();
+  }, [chatId]);
+  useEffect(() => {
+    getChatUserData();
+    getUserChatId();
+  }, [userId]);
 
   useEffect(() => {
     if (!token) {
       push("/auth");
     }
-    socket.on("connect", () => {
-      console.log("connected to server");
-    });
-    // socket.emit("join", userData, (error) => {
-    //   if (error) {
-    //     alert(error);
-    //     // location.href = "/";
-    //   }
-    // });
-    getAllMessage();
     userProfile();
+
     const handleVisibilityChange = () => {
       setIsVisible(!document.hidden);
     };
@@ -204,9 +245,8 @@ const ChatRoom = (getUser) => {
       notificationSound();
       setUnreadCount(unreadCount + 1);
     }
-
     socket.on("message", (message) => {
-      const avatarBlob = new Blob([Buffer.from(message.avatar)]);
+      const avatarBlob = new Blob([Buffer?.from(message.avatar)]);
       message.avatar = URL.createObjectURL(avatarBlob);
       if (message?.image) {
         const blob = new Blob([Buffer.from(message.image)]);
@@ -223,7 +263,13 @@ const ChatRoom = (getUser) => {
       socket.off("message");
     };
   }, [messages]);
-
+  {
+    isEmoji && (
+      <div className={styles.emojiWrapper1}>
+        <Picker data={data} onEmojiSelect={addEmoji} />
+      </div>
+    );
+  }
   const addEmoji = (e) => {
     const emoji = e.native;
     setMsg({ message: msg?.message + emoji });
@@ -237,78 +283,72 @@ const ChatRoom = (getUser) => {
     setChatImage(null);
     setPreview(null);
   };
-  console.log("messages", messages);
-  console.log("userData", userData);
+
   return (
-    <div className={styles.mainWrapper}>
-      <Head>
-        {unreadCount > 0 && !isVisible ? (
-          <title>{unreadCount} new message</title>
-        ) : (
-          <title>chat</title>
-        )}
-      </Head>
-      <div className={styles.headerWrapper}>
-        <div style={{ cursor: "pointer" }} onClick={handleProfileModal}>
-          <UserInfo
-            src={profileImage}
-            user={userData?.name || userData?.email}
-          />
-        </div>
-
-        <div
-          style={{ fontSize: "25px", color: "#eee", cursor: "pointer" }}
-          onClick={handleLogout}
-        >
-          <LogoutOutlined />
-        </div>
-
-        {open && (
-          <Modal
-            open={open}
-            setOpen={setOpen}
-            setUploadImage={setUploadImage}
-            uploadProfile={uploadProfile}
-          />
-        )}
-      </div>
-      <ChatSection
-        messages={messages}
-        userData={userData}
-        isVisible={isVisible}
-        socket={socket}
-      />
-
-      {isEmoji && (
-        <div className={styles.emojiWrapper1}>
-          <Picker data={data} onEmojiSelect={addEmoji} />
-        </div>
-      )}
-      {chatImage && (
-        <>
-          <div className={styles.imagePreviewWrapper}>
-            <CloseOutlined
-              onClick={handleCloseImage}
-              style={{ fontSize: "20px" }}
+    <PrivateLayout>
+      <div className={styles.mainWrapper}>
+        <Head>
+          {unreadCount > 0 && !isVisible ? (
+            <title>{unreadCount} new message</title>
+          ) : (
+            <title>chat</title>
+          )}
+        </Head>
+        <div className={styles.headerWrapper}>
+          <div onClick={handleProfileModal}>
+            <UserInfo
+              src={chatUserData?.avatar}
+              user={chatUserData?.name || chatUserData?.email}
             />
-            <div className={styles.imgPreview}>
-              <Image width={350} src={preview} />
-            </div>
           </div>
-        </>
-      )}
-      <ChatInput
-        msg={msg}
-        setMsg={setMsg}
-        socket={socket}
-        chatImage={chatImage}
-        setIsEmoji={setIsEmoji}
-        setChatImage={setChatImage}
-        handleFileUpload={handleFileUpload}
-        isEmoji={isEmoji}
-        userId={userId}
-      />
-    </div>
+
+          <div
+            style={{ fontSize: "25px", color: "#eee", cursor: "pointer" }}
+            onClick={handleLogout}
+          >
+            <LogoutOutlined />
+          </div>
+
+    
+        </div>
+        <ChatSection
+          messages={messages}
+          userData={userData}
+          isVisible={isVisible}
+          socket={socket}
+        />
+
+        {isEmoji && (
+          <div className={styles.emojiWrapper1}>
+            <Picker data={data} onEmojiSelect={addEmoji} />
+          </div>
+        )}
+        {chatImage && (
+          <>
+            <div className={styles.imagePreviewWrapper}>
+              <CloseOutlined
+                onClick={handleCloseImage}
+                style={{ fontSize: "20px" }}
+              />
+              <div className={styles.imgPreview}>
+                <Image width={350} src={preview} />
+              </div>
+            </div>
+          </>
+        )}
+        <ChatInput
+          msg={msg}
+          setMsg={setMsg}
+          socket={socket}
+          chatImage={chatImage}
+          setIsEmoji={setIsEmoji}
+          setChatImage={setChatImage}
+          handleFileUpload={handleFileUpload}
+          isEmoji={isEmoji}
+          chatId={chatId}
+        />
+      </div>
+    </PrivateLayout>
   );
 };
 

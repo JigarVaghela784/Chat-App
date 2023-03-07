@@ -8,11 +8,12 @@ export const getUserData = async (token) => {
         mode: "cors",
       }
     );
-    const { name, email, _id } = response.data.user;
+    const { name, email, _id } = response.data;
     const userData = { _id, name, email };
     return userData;
   } catch (error) {
     console.log("error", error);
   }
 };
+
 

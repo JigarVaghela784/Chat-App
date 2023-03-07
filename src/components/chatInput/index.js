@@ -16,12 +16,11 @@ const ChatInput = (props) => {
     setIsEmoji,
     handleFileUpload,
     isEmoji,
-    userId,
+    chatId,
   } = props;
   const [form] = Form.useForm();
   const token = Cookies.get("token");
-  const messageId=userId
-  // console.log('messageId', messageId)
+  const messageId=chatId
   // send user message
   const handleSend = async () => {
     if (msg.message !== "") {
