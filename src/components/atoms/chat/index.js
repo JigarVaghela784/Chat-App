@@ -85,7 +85,7 @@ const Chat = ({
           }
         >
           <div className={styles.messageLength}>
-            {!message.image ? <p>{children}</p> : <Image className={styles.chatImage} src={message.image} />}
+            {!message.image ? <p>{children}</p> : <Image className={styles.chatImage} src={message.image} width={300} />}
           </div>
           <div className={styles.userInfo}>
             <div>

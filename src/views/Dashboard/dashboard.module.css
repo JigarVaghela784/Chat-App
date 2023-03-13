@@ -1,44 +1,43 @@
 .mainWrapper {
-  display: flex;
-  justify-content: center;
-  flex-flow: column;
-  background: #e5ded8 url("../../styles/assets/whatsapp-bg.png");
-
+  /* display: flex; */
+  /* justify-content: center; */
+  /* flex-flow: column; */
+  background: #e9edef;
+/*  */
   height: 100vh;
 }
+
 .headerWrapper {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   height: 8%;
   width: 100%;
   padding: 10px;
   background-color: #00a884;
   align-items: center;
-  padding: 10px 30px;
-
+  padding: 25px 50px;
 }
-.sendImageWrapper{
+.sendImageWrapper {
   padding: 10px;
   position: relative;
   top: 10px;
   cursor: pointer;
 }
-.sendImage{
+.sendImage {
   display: none !important;
 }
-.imgPreview{
+.imgPreview {
   padding: 10px;
   width: fit-content;
-  /* background: white; */
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
   flex-flow: row-reverse;
   background: white;
   box-shadow: 0 19px 38px rgba(138, 138, 138, 0.3),
-  0 15px 12px rgba(196, 196, 196, 0.22);
+    0 15px 12px rgba(196, 196, 196, 0.22);
 }
-.imagePreviewWrapper{
+.imagePreviewWrapper {
   display: flex;
   width: fit-content;
   justify-content: flex-end;
@@ -87,18 +86,17 @@
   margin: 10px;
   cursor: pointer;
 }
-.buttonWrapperDisable{
+.buttonWrapperDisable {
   margin: 10px;
   cursor: not-allowed;
-
 }
-.disableButton{
+.disableButton {
   color: #777777;
 }
 /* .button{
   color: #00a884;
 } */
-.emojiWrapper{
+.emojiWrapper {
   cursor: pointer;
   font-size: 20px;
   /* display: flex; */

@@ -1,12 +1,14 @@
 import { io } from "socket.io-client";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useStoreActions } from "../../store/hooks";
+import { logOutUser } from "../../store/actions/auth";
 import { useEffect, useState } from "react";
 import ChatSection from "../../components/chatSection";
 import { CloseOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Image, Modal } from "antd";
+import { Image } from "antd";
 import ChatInput from "../../components/chatInput";
-import styles from "../../views/Dashboard/dashboard.module.css";
+import styles from "../../styles/chatroom.module.css";
 import Head from "next/head";
 import UserInfo from "../../components/atoms/userInfo";
 import { useRouter } from "next/router";
@@ -14,18 +16,18 @@ import PrivateLayout from "../../layout/PrivateLayout";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { getUserData } from "../../lib/profile/profileData";
+
 const socket = io(`${process.env.NEXT_PUBLIC_API_URL}/`, {
   transports: ["websocket"],
 });
 const ChatRoom = (getUser) => {
   const [messages, setMessages] = useState([]);
   const [userData] = useState(getUser);
-  const [chatUserData, setChatUserData] = useState(null)
+  const [chatUserData, setChatUserData] = useState(null);
   const [isEmoji, setIsEmoji] = useState(false);
 
   const [uploadImage, setUploadImage] = useState(null);
   const [profileImage, setProfileImage] = useState();
-  const [open, setOpen] = useState(false);
   const [isUpload, setIsUpload] = useState(false);
   const [chatImage, setChatImage] = useState(null);
   const [preview, setPreview] = useState();
@@ -35,8 +37,10 @@ const ChatRoom = (getUser) => {
   const [chatId, setChatId] = useState(null);
   const [msg, setMsg] = useState({ message: "" });
   const token = Cookies.get("token");
+  const actions = useStoreActions({ logOutUser });
   const router = useRouter();
   const userId = router.query?.id;
+  
   const getUserChatId = async () => {
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -69,7 +73,6 @@ const ChatRoom = (getUser) => {
       setChatUserData(data);
     } catch (error) {}
   };
-  console.log('chatId', chatId)
   useEffect(() => {
     if (!chatImage) {
       setPreview(undefined);
@@ -98,7 +101,7 @@ const ChatRoom = (getUser) => {
       });
       Cookies.remove("token");
       actions;
-      return push("/");
+      return router.push("/");
     } catch (error) {
       console.log("error", error);
     }
@@ -196,7 +199,6 @@ const ChatRoom = (getUser) => {
     socket.emit("join", { ...userData, room: chatId }, (error) => {
       if (error) {
         alert(error);
-        // location.href = "/";
       }
     });
     getAllMessage();
@@ -208,7 +210,7 @@ const ChatRoom = (getUser) => {
 
   useEffect(() => {
     if (!token) {
-      push("/auth");
+      router.push("/auth");
     }
     userProfile();
 
@@ -240,10 +242,11 @@ const ChatRoom = (getUser) => {
   };
 
   //render user message
-  useEffect(() => {
+  const messageHandler = async () => {
     if (!isVisible) {
       notificationSound();
       setUnreadCount(unreadCount + 1);
+      // await dispatch(unseenUnreadCount(unreadCount));
     }
     socket.on("message", (message) => {
       const avatarBlob = new Blob([Buffer?.from(message.avatar)]);
@@ -258,6 +261,9 @@ const ChatRoom = (getUser) => {
       messages = messages?.filter((delMsg) => delMsg?._id !== message?._id);
       setMessages(messages);
     });
+  };
+  useEffect(() => {
+    messageHandler();
 
     return () => {
       socket.off("message");
@@ -265,7 +271,7 @@ const ChatRoom = (getUser) => {
   }, [messages]);
   {
     isEmoji && (
-      <div className={styles.emojiWrapper1}>
+      <div className={styles.emojiWrapper}>
         <Picker data={data} onEmojiSelect={addEmoji} />
       </div>
     );
@@ -273,10 +279,6 @@ const ChatRoom = (getUser) => {
   const addEmoji = (e) => {
     const emoji = e.native;
     setMsg({ message: msg?.message + emoji });
-  };
-
-  const handleProfileModal = () => {
-    setOpen(true);
   };
 
   const handleCloseImage = () => {
@@ -295,7 +297,7 @@ const ChatRoom = (getUser) => {
           )}
         </Head>
         <div className={styles.headerWrapper}>
-          <div onClick={handleProfileModal}>
+          <div>
             <UserInfo
               src={chatUserData?.avatar}
               user={chatUserData?.name || chatUserData?.email}
@@ -308,18 +310,17 @@ const ChatRoom = (getUser) => {
           >
             <LogoutOutlined />
           </div>
-
-    
         </div>
         <ChatSection
           messages={messages}
           userData={userData}
           isVisible={isVisible}
           socket={socket}
+          chatId={chatId}
         />
 
         {isEmoji && (
-          <div className={styles.emojiWrapper1}>
+          <div className={styles.emojiWrapper}>
             <Picker data={data} onEmojiSelect={addEmoji} />
           </div>
         )}
@@ -336,6 +337,7 @@ const ChatRoom = (getUser) => {
             </div>
           </>
         )}
+
         <ChatInput
           msg={msg}
           setMsg={setMsg}

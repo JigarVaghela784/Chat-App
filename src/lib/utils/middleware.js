@@ -1,7 +1,7 @@
-// import errors from "http-errors";
-// import type { NextApiRequest, NextApiResponse } from "next";
+import errors from "http-errors";
+import  { NextApiRequest, NextApiResponse } from "next";
 
-// type Handler = (req: NextApiRequest, res: NextApiResponse) => Promise<void>;
+ Handler = (NextApiRequest,  NextApiResponse) ;
 
 // common middleware for all api routes
 export default function middleware(handler) {

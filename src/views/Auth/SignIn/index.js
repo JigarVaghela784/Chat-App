@@ -84,12 +84,12 @@ const SignIn = (props) => {
                 placeholder="password"
                 className={styles.InputField}
               />
+            </Form.Item>
               <div className={styles.resetPass}>
                 <span className={styles.login} onClick={handleForgotPassword}>
                   Forgot Password?
                 </span>
               </div>
-            </Form.Item>
             <Button
               className={styles.Button}
               buttonText="Sign In"

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Button from "../../components/atoms/button";
-import styles from "./home.module.css"
+import styles from "./home.module.css";
 
 const Home = () => {
   const { push } = useRouter();
@@ -13,13 +13,14 @@ const Home = () => {
     <div className={styles.container}>
       <div className={styles.homeWrapper}>
 
-      <div >
-        <h1>Chat Room</h1>
+      <div className={styles.headWrapper}>
+        <h1>Welcome to chat app</h1>
       </div>
-
       <Button buttonText="Go to Login Page" onClick={handleRedirect} />
+
     </div>
       </div>
+
   );
 };
 

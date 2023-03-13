@@ -111,13 +111,12 @@ const SiderBase = () => {
             style={{
               minHeight: " calc(100vh - 78px)",
               borderRight: 0,
-              backgroundColor: "#eee",
+              backgroundColor: "#fff",
             }}
             onClick={(value) => {
               const findData = items.find(
                 (element) => element?.key === value.key
               );
-              console.log("findData", findData.route + userData?._id);
               push(`${findData.route}&${userData._id}`);
             }}
           />

@@ -1,0 +1,48 @@
+.mainWrapper {
+  display: flex;
+  justify-content: center;
+  flex-flow: column;
+  background: #e5ded8 url("./assets/whatsapp-bg.png");
+  position: relative;
+  height: 100vh;
+}
+.headerWrapper {
+  display: flex;
+  justify-content: space-between;
+  height: 8%;
+  width: 100%;
+  padding: 10px;
+  background-color: #00a884;
+  align-items: center;
+  padding: 10px 30px;
+
+}
+.imgPreview{
+  padding: 10px;
+  width: fit-content;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  flex-flow: row-reverse;
+  background: white;
+  box-shadow: 0 19px 38px rgba(138, 138, 138, 0.3),
+  0 15px 12px rgba(196, 196, 196, 0.22);
+}
+.imagePreviewWrapper{
+  position: absolute;
+  bottom: 80px;
+  display: flex;
+  width: fit-content;
+  justify-content: flex-end;
+  align-items: flex-start;
+  flex-flow: row-reverse;
+  margin: 10px;
+}
+
+.emojiWrapper{
+  bottom: 72px;
+  position: fixed;
+  right: 0px;
+  z-index: 9999;
+}
+

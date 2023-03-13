@@ -1,11 +1,11 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import React, { useEffect, useRef } from "react";
-import styles from "../../views/Dashboard/dashboard.module.css";
+import styles from "./chatSection.module.css";
 import Chat from "../atoms/chat";
 
 const ChatSection = (props) => {
-  const { messages, userData, isVisible, socket } = props;
+  const { messages, userData, isVisible, socket, chatId } = props;
   const lastMessageRef = useRef(null);
   const token = Cookies.get("token");
 
@@ -24,32 +24,33 @@ const ChatSection = (props) => {
       socket.emit("deleteMessage", { ...data });
     } catch (error) {}
   };
-
   useEffect(() => {
     lastMessageRef.current.scrollIntoView();
   }, [messages]);
-  
   return (
     <div className={styles.chatWrapper}>
       {messages?.map((e, index) => {
         const isUser = e.name === userData?.name;
         const currentIndex = messages.findIndex((d) => d._id === e._id);
         const prevData = messages[currentIndex - 1];
-        return (
-          <Chat
-            profileImage={e.avatar}
-            prevData={prevData}
-            key={index}
-            isUser={isUser}
-            username={e.name}
-            time={e.createdAt}
-            message={e}
-            deleteMessageHandler={deleteMessageHandler}
-            isSeen={!isVisible}
-          >
-            {e?.msg || e?.message || e.emoji}
-          </Chat>
-        );
+
+        if (chatId === e.messageId) {
+          return (
+            <Chat
+              profileImage={e.avatar}
+              prevData={prevData}
+              key={index}
+              isUser={isUser}
+              username={e.name}
+              time={e.createdAt}
+              message={e}
+              deleteMessageHandler={deleteMessageHandler}
+              isSeen={!isVisible}
+            >
+              {e?.msg || e?.message || e.emoji}
+            </Chat>
+          );
+        }
       })}
 
       <div ref={lastMessageRef}></div>

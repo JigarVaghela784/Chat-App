@@ -1,0 +1,56 @@
+.sendImageWrapper {
+  padding: 10px;
+  position: relative;
+  top: 10px;
+  cursor: pointer;
+}
+.sendImage {
+  display: none !important;
+}
+.fieldWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #eee;
+  width: 100%;
+  padding: 10px 30px;
+}
+.inputWrapper {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 95%;
+}
+.input {
+  border-radius: 5px;
+}
+.buttonWrapper {
+  margin: 10px;
+  cursor: pointer;
+}
+.buttonWrapperDisable {
+  margin: 10px;
+  cursor: not-allowed;
+}
+.disableButton {
+  color: #777777;
+}
+/* .button{
+    color: #00a884;
+  } */
+.emojiWrapper {
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0 15px;
+}
+@media only screen and (min-width: 1200px) {
+  .input {
+    width: 100%;
+
+    border-radius: 5px;
+  }
+  .inputWrapper div div div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

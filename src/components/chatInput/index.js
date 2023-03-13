@@ -1,9 +1,14 @@
-import { SendOutlined, SmileOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  LinkOutlined,
+  SendOutlined,
+  SmileOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import { Form } from "antd";
 import axios from "axios";
 import Cookies from "js-cookie";
 import React from "react";
-import styles from "../../views/Dashboard/dashboard.module.css";
+import styles from "./chatInput.module.css";
 import Input from "../atoms/input";
 
 const ChatInput = (props) => {
@@ -20,7 +25,8 @@ const ChatInput = (props) => {
   } = props;
   const [form] = Form.useForm();
   const token = Cookies.get("token");
-  const messageId=chatId
+  const messageId = chatId;
+
   // send user message
   const handleSend = async () => {
     if (msg.message !== "") {
@@ -44,7 +50,7 @@ const ChatInput = (props) => {
       try {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/user/message/image`,
+          `${process.env.NEXT_PUBLIC_API_URL}/user/message/image/${messageId}`,
           formData,
           {
             mode: "core",
@@ -71,6 +77,7 @@ const ChatInput = (props) => {
       >
         <Input name="message" className={styles.input} msg={msg} />
       </Form.Item>
+      <LinkOutlined style={{ fontSize: "22px" }} />
       <Form.Item onChange={handleFileUpload}>
         <label className={styles.sendImageWrapper}>
           <UploadOutlined style={{ fontSize: "30px", color: "#555" }} />

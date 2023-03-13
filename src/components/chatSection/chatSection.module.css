@@ -1,0 +1,22 @@
+
+  .chatWrapper {
+    display: flex;
+    flex-flow: column;
+    height: calc(100vh - 150px);
+    width: 100%;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+  }
+  .chatWrapper::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  .chatWrapper ::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+  }
+  
+  @media only screen and (min-width: 768px) {
+    .chatWrapper {
+      height: calc(100vh - 151px);
+    }
+  }
